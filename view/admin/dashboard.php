@@ -8,9 +8,12 @@ if (!isset($_SESSION['user_id'])) {
     redirect('view/auth/login.php');
     exit();
 }
-
+// getRoutePermission($_SERVER['PHP_SELF'], $userInfo['Role']);
 include '../../template/header.php';
 include '../../template/sidebar.php';
+
+
+
 
 //  call total products, orders, users, sales from database
 $totalProducts = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS count FROM products"))['count'];

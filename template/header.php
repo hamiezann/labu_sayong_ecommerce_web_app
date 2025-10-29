@@ -10,14 +10,13 @@ if (!$e || mysqli_num_rows($e) == 0) {
     redirect(base_url('view/auth/login.php'));
 }
 
+getRoutePermission($_SERVER['PHP_SELF'], $userInfo['Role']);
 
-if ($userInfo['Role'] !== 'admin' && $userInfo['Role'] !== 'staff') {
-    redirect(base_url('view/error/403.php'));
-}
+
 
 // check image
 if (!empty($userInfo['Image'])) {
-    $imagePath = base_url('assets/img/admin/' . $userInfo['Image']);
+    $imagePath = base_url($userInfo['Image']);
 } else {
     $imagePath = base_url('assets/img/no_image.png');
 }
@@ -87,21 +86,39 @@ if (!empty($userInfo['Image'])) {
                             <span class="d-none d-md-inline"><?= strtr($userInfo['FullName'], 0, 20) ?></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                            <li class="user-header text-bg-primary">
+                            <li class="user-header text-bg-primary text-center">
                                 <img
-                                    src="<?= $imagePath ?>"
-                                    class="rounded-circle shadow"
-                                    alt="User Image" />
-                                <p>
-                                    <?= strtr($userInfo['FullName'], 0, 20) ?>
-                                    <small>Created At: <?= date('d-m-Y', strtotime($userInfo['CreatedAt'])) ?></small>
+                                    src="<?= htmlspecialchars($imagePath) ?>"
+                                    class="rounded-circle shadow mb-2"
+                                    alt="User Image"
+                                    width="80" height="80" />
+                                <p class="mb-0 fw-semibold">
+                                    <?= htmlspecialchars(strlen($userInfo['FullName']) > 20
+                                        ? substr($userInfo['FullName'], 0, 20) . '...'
+                                        : $userInfo['FullName']) ?>
                                 </p>
+                                <small>Created At: <?= date('d-m-Y', strtotime($userInfo['CreatedAt'])) ?></small>
                             </li>
-                            <li class="user-footer">
-                                <!-- this modal at template/footer.php -->
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalSignOut" class="btn btn-outline-danger btn-flat float-end">Sign out</button>
+
+                            <?php if ($userInfo['Role'] === 'staff'): ?>
+                                <li class="user-footer text-center">
+                                    <a href="<?= base_url('view/staff/staff-profile.php') ?>"
+                                        class="btn btn-outline-success btn-flat w-75 mb-2">
+                                        <i class="bi bi-person-circle me-1"></i> My Profile
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+
+                            <li class="user-footer text-center">
+                                <button type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalSignOut"
+                                    class="btn btn-outline-danger btn-flat w-75">
+                                    <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+                                </button>
                             </li>
                         </ul>
+
                     </li>
                 </ul>
             </div>

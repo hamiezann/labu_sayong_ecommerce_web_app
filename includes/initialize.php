@@ -59,3 +59,59 @@ function sessionMessage($status, $message)
 
     return $_SESSION['message'];
 }
+
+function getRoutePermission($url, $role)
+{
+    // Normalize for consistency
+    $url = strtolower(trim($url));
+    $role = strtolower(trim($role));
+
+    // Define allowed routes per role
+    $permissions = [
+        'admin' => [
+            'admin/dashboard.php',
+            'admin/manage-staff.php',
+            'admin/manage-customer.php',
+            'staff/manage-product.php',
+            'staff/chat-list.php',
+            'staff/order-list.php',
+            // 'staff/manage-product.php',
+
+        ],
+        'staff' => [
+            'staff/manage-product.php',
+            'staff/chat-list.php',
+            'staff/order-list.php',
+            'admin/manage-customer.php',
+            'staff/staff-profile.php'
+        ],
+        'customer' => [
+            'index.php',
+            'shop-listing.php',
+            'cart.php',
+            'customer/my-profile.php',
+            'product-detail.php'
+        ],
+    ];
+
+    // If role not defined, treat as guest (no permission)
+    if (!isset($permissions[$role])) {
+        header("Location: " . base_url('view/error404.php'));
+        exit();
+    }
+
+    // Check if the requested URL matches any allowed page for that role
+    $allowed = false;
+    foreach ($permissions[$role] as $allowedPage) {
+        if (strpos($url, strtolower($allowedPage)) !== false) {
+            $allowed = true;
+            break;
+        }
+    }
+
+    // If no match found → redirect to 404 or unauthorized page
+    if (!$allowed) {
+        header("Location: " . base_url('view/error404.php'));
+        exit();
+    }
+}

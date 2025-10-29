@@ -4,8 +4,18 @@ require_once '../../includes/config.php';
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 header("Expires: 0");
-if (isset($_SESSION['user_id'])) {
-    header("Location: ../staff/dashboard.php");
+if (isset($_SESSION['user_id']) && isset($_SESSION['user_role'])) {
+    switch ($_SESSION['user_role']) {
+        case 'admin':
+            header("Location: ../admin/dashboard.php");
+            break;
+        case 'staff':
+            header("Location: ../staff/manage-product.php");
+            break;
+        default:
+            header("Location: ../../index.php");
+            break;
+    }
     exit();
 }
 
@@ -26,8 +36,10 @@ if (isset($_POST['sign-in'])) {
             $_SESSION['user_role'] = $user['Role'];
 
             sessionMessage('success', 'Welcome back, ' . $user['FullName'] . '!');
-            if ($user['Role'] == 'admin' || $user['Role'] == 'staff') {
-                redirect('view/staff/dashboard.php');
+            if ($user['Role'] == 'admin') {
+                redirect('view/admin/dashboard.php');
+            } else if ($user['Role'] == 'staff') {
+                redirect('view/staff/manage-product.php');
             } else {
                 redirect('index.php');
             }

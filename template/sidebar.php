@@ -22,68 +22,56 @@
 
                 <!-- main -->
                 <li class="nav-header">MAIN</li>
+                <?php if ($userInfo && $userInfo['Role'] === 'admin'): ?>
+                    <!-- dashboard -->
+                    <li class="nav-item">
+                        <a href="<?= base_url('view/admin/dashboard.php') ?>" class="nav-link <?= $page == 'dashboard' ? 'active' : '' ?>">
+                            <i class="nav-icon bi bi-palette"></i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
 
-                <!-- dashboard -->
-                <li class="nav-item">
-                    <a href="<?= base_url('view/staff/dashboard.php') ?>" class="nav-link <?= $page == 'dashboard' ? 'active' : '' ?>">
-                        <i class="nav-icon bi bi-palette"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
-
-                <!-- admin management -->
-                <!-- <?php if ($userInfo && $userInfo['Role'] === 'admin'): ?>
-               
+                    <!-- admin management -->
                     <li class="nav-item <?= $page == 'admin' ? 'menu-open' : '' ?>">
                         <a href="#" class="nav-link <?= $page == 'admin' ? 'active' : '' ?>">
                             <i class="nav-icon bi bi-people"></i>
                             <p>
-                                Staff Management
+                                User Management
                                 <i class="nav-arrow bi bi-chevron-right"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
+
                             <li class="nav-item">
-                                <a href="<?= base_url('view/staff/add-staff.php') ?>" class="nav-link <?= $subPage == 'create-admin' ? 'active' : '' ?>">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Create Staff</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('view/staff/manage-staff.php') ?>" class="nav-link <?= $subPage == 'manage-admin' ? 'active' : '' ?>">
+                                <a href="<?= base_url('view/admin/manage-staff.php') ?>" class="nav-link <?= $subPage == 'manage-staff' ? 'active' : '' ?>">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Manage Staff</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('view/admin/manage-customer.php') ?>" class="nav-link <?= $subPage == 'manage-customer' ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Manage Client</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
-                <?php endif; ?> -->
-
-
-                <!-- product management -->
-                <li class="nav-item <?= $page == 'product' ? 'menu-open' : '' ?>">
-                    <a href="#" class="nav-link <?= $page == 'product' ? 'active' : '' ?>">
-                        <i class="nav-icon bi bi-box-seam"></i>
-                        <p>
-                            Product Management
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <!-- <li class="nav-item">
-                            <a href="<?= base_url('view/staff/product-add.php') ?>" class="nav-link <?= $subPage == 'add-product' ? 'active' : '' ?>">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Add Product</p>
-                            </a>
-                        </li> -->
-                        <li class="nav-item">
-                            <a href="<?= base_url('view/staff/manage-product.php') ?>" class="nav-link <?= $subPage == 'manage-product' ? 'active' : '' ?>">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Manage Products</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                <?php endif; ?>
+                <?php if ($userInfo && $userInfo['Role'] === 'staff'): ?>
+                    <li class="nav-item">
+                        <a href="<?= base_url('view/admin/manage-customer.php') ?>" class="nav-link <?= $subPage == 'manage-customer' ? 'active' : '' ?>">
+                            <i class="nav-icon bi bi-people"></i>
+                            <p>Manage Client</p>
+                        </a>
+                    </li>
+                    <!-- product management -->
+                    <li class="nav-item">
+                        <a href="<?= base_url('view/staff/manage-product.php') ?>" class="nav-link <?= $subPage == 'manage-product' ? 'active' : '' ?>">
+                            <i class="nav-icon bi bi-box-seam"></i>
+                            <p>Manage Products</p>
+                        </a>
+                    </li>
+                <?php endif; ?>
 
                 <!-- order management -->
                 <li class="nav-item <?= $page == 'order' ? 'menu-open' : '' ?>">
