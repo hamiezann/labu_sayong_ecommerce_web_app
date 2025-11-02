@@ -8,14 +8,39 @@ $minPrice = isset($_GET['min_price']) ? floatval($_GET['min_price']) : 0;
 $maxPrice = isset($_GET['max_price']) ? floatval($_GET['max_price']) : 10000;
 
 // Build query with filters
-$query = "SELECT * FROM products WHERE 1=1";
-
-if (!empty($search)) {
-    $query .= " AND (name LIKE '%$search%' OR description LIKE '%$search%')";
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $query = "
+        SELECT p.*, 
+               CASE WHEN w.product_id IS NOT NULL THEN 1 ELSE 0 END AS in_wishlist
+        FROM products p
+        LEFT JOIN wishlist w 
+        ON p.product_id = w.product_id AND w.user_id = '$user_id'
+        WHERE 1=1
+    ";
+} else {
+    $query = "
+        SELECT p.*, 0 AS in_wishlist
+        FROM products p
+        WHERE 1=1
+    ";
 }
 
-$query .= " AND price BETWEEN $minPrice AND $maxPrice";
-$query .= " ORDER BY created_at DESC";
+if (!empty($search)) {
+    $query .= " AND (p.name LIKE '%$search%' OR p.description LIKE '%$search%')";
+}
+
+$query .= " AND p.price BETWEEN $minPrice AND $maxPrice";
+$query .= " ORDER BY p.created_at DESC";
+
+// $query = "SELECT * FROM products WHERE 1=1";
+
+// if (!empty($search)) {
+//     $query .= " AND (name LIKE '%$search%' OR description LIKE '%$search%')";
+// }
+
+// $query .= " AND price BETWEEN $minPrice AND $maxPrice";
+// $query .= " ORDER BY created_at DESC";
 
 $productList = mysqli_query($conn, $query);
 
@@ -159,9 +184,11 @@ $productList = mysqli_query($conn, $query);
                                     </a> -->
                                     <div class="d-flex align-items-center gap-3">
                                         <a href="<?= base_url('view/customer/product-detail.php?id=' . $product['product_id']) ?>" class="btn btn-view flex-grow-1"> <i class="bi bi-eye me-2"></i>View Details</a>
-                                        <button class="btn btn-icon-fav">
-                                            <i class="bi bi-bag-heart-fill"></i>
+                                        <button class="btn btn-icon-fav wishlist-btn"
+                                            data-product-id="<?= $product['product_id'] ?>">
+                                            <i class="bi <?= $product['in_wishlist'] ? 'bi-heart-fill text-danger' : 'bi-heart' ?> fs-5"></i>
                                         </button>
+
                                     </div>
                                 </div>
                             </div>
@@ -183,6 +210,55 @@ $productList = mysqli_query($conn, $query);
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const icon = this.querySelector('i');
+
+            fetch('../function/toggle-wishlist.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `product_id=${productId}`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.action === 'added') {
+                            icon.classList.remove('bi-heart');
+                            icon.classList.add('bi-heart-fill', 'text-danger');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Added to Wishlist!',
+                                timer: 1200,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            icon.classList.remove('bi-heart-fill', 'text-danger');
+                            icon.classList.add('bi-heart');
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Removed from Wishlist',
+                                timer: 1200,
+                                showConfirmButton: false
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Login Required',
+                            text: data.message,
+                        });
+                    }
+                })
+                .catch(err => console.error('Wishlist toggle error:', err));
+        });
+    });
+</script>
 
 <?php
 include '../view/customer/footer.php';

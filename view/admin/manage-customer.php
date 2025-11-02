@@ -6,7 +6,7 @@ $subPage = 'manage-customer';
 $pageName = 'Manage Customer';
 
 // fetch full cust list
-$cust_lists = mysqli_query($conn, "SELECT * FROM users WHERE role = 'customer' ORDER BY FullName DESC");
+$cust_lists = mysqli_query($conn, "SELECT * FROM users WHERE role = 'customer' ORDER BY acc_status DESC, FullName ASC");
 
 // add new cust
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_customer'])) {
@@ -84,25 +84,44 @@ if (isset($_GET['delete'])) {
     }
 
     $row = mysqli_fetch_assoc($result);
-    $name = $row['FullName'];
-    $imagePath = "../../" . $row['Image'];
+    // $name = $row['FullName'];
+    // $imagePath = "../../" . $row['Image'];
 
-    if (!empty($row['Image']) && file_exists($imagePath)) {
-        unlink($imagePath);
-    }
+    // if (!empty($row['Image']) && file_exists($imagePath)) {
+    //     unlink($imagePath);
+    // }
 
-    mysqli_query($conn, "DELETE FROM logs WHERE user_id = '$id'");
-    mysqli_query($conn, "DELETE FROM chats WHERE sender_id = '$id' OR receiver_id = '$id'");
-    mysqli_query($conn, "DELETE FROM users WHERE id = '$id'");
+    // mysqli_query($conn, "DELETE FROM logs WHERE user_id = '$id'");
+    // mysqli_query($conn, "DELETE FROM chats WHERE sender_id = '$id' OR receiver_id = '$id'");
+    // mysqli_query($conn, "DELETE FROM users WHERE id = '$id'");
 
+    mysqli_query($conn, "UPDATE users SET acc_status = FALSE WHERE id = '$id' ");
     $uid = $_SESSION['user_id'] ?? 0;
-    $action = mysqli_real_escape_string($conn, "Deleted customer: $name");
+    $action = mysqli_real_escape_string($conn, "Deactivate account status for customer: $name");
     mysqli_query($conn, "INSERT INTO logs (user_id, action) VALUES ('$uid', '$action')");
 
-    $_SESSION['success_message'] = "🗑️ Customer '$name' deleted successfully with related data!";
+    $_SESSION['success_message'] = "🗑️ Customer  account '$name' deactivated successfully with related data!";
     header("Location: manage-customer.php");
     exit();
 }
+
+// Toggle account active/inactive
+if (isset($_GET['toggle'])) {
+    $id = intval($_GET['toggle']);
+    $query = mysqli_query($conn, "SELECT FullName, acc_status FROM users WHERE id='$id' AND role='customer'");
+    if ($row = mysqli_fetch_assoc($query)) {
+        $newStatus = $row['acc_status'] ? 0 : 1;
+        $statusText = $newStatus ? 'Activated' : 'Deactivated';
+        mysqli_query($conn, "UPDATE users SET acc_status='$newStatus' WHERE id='$id'");
+        $uid = $_SESSION['user_id'] ?? 0;
+        $action = mysqli_real_escape_string($conn, "$statusText customer: {$row['FullName']}");
+        mysqli_query($conn, "INSERT INTO logs (user_id, action) VALUES ('$uid', '$action')");
+        $_SESSION['success_message'] = "✅ Customer '{$row['FullName']}' has been $statusText.";
+    }
+    header("Location: manage-customer.php");
+    exit();
+}
+
 
 
 include '../../template/header.php';
@@ -140,17 +159,23 @@ include '../../template/sidebar.php';
                                 <th>Email</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php $i = 1;
                             while ($row = mysqli_fetch_assoc($cust_lists)) : ?>
-                                <tr>
+                                <?php $isActive = $row['acc_status'] == 1;
+                                $rowClass = $isActive ? '' : 'table-secondary opacity-75';
+                                $statusIcon = $isActive ? 'bi-person-check text-success' : 'bi-person-x text-danger';
+                                $statusTitle = $isActive ? 'Active Account' : 'Deactivated Account';
+                                ?>
+                                <tr class="<?= $rowClass ?>">
                                     <td><?= $i++ ?></td>
                                     <td>
                                         <?php if ($row['Image']) : ?>
-                                            <img src="<?= base_url($row['Image']) ?>" width="50" class="rounded">
+                                            <img src="<?= base_url($row['Image']) ?>" width="50" class="rounded-circle <?= $isActive ? '' : 'opacity-50' ?>">
                                         <?php else: ?>
                                             <span class="text-muted">No Image</span>
                                         <?php endif; ?>
@@ -159,18 +184,35 @@ include '../../template/sidebar.php';
                                     <td><?= htmlspecialchars($row['Email']) ?></td>
                                     <td><?= date("d M Y, h:i A", strtotime($row['CreatedAt'])) ?> </td>
                                     <td><?= date("d M Y, h:i A", strtotime($row['UpdatedAt'])) ?> </td>
+                                    <td class="text-center">
+                                        <?php if ($isActive): ?>
+                                            <span class="badge bg-success px-3 py-2">
+                                                <i class="bi bi-person-check-fill me-1"></i> Active
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="badge bg-danger px-3 py-2">
+                                                <i class="bi bi-person-x-fill me-1"></i> Inactive
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
+
                                     <td>
-                                        <button class="btn btn-sm btn-outline-primary editBtn"
+                                        <button
+                                            class="btn btn-sm <?= $isActive ? 'btn-outline-primary' : 'btn-outline-secondary' ?> editBtn"
+                                            <?= !$isActive ? 'disabled' : '' ?>
                                             data-id="<?= htmlspecialchars($row['id'], ENT_QUOTES) ?>"
                                             data-image="<?= htmlspecialchars($row['Image'], ENT_QUOTES) ?>"
                                             data-fullname="<?= htmlspecialchars($row['FullName'], ENT_QUOTES) ?>"
                                             data-email="<?= htmlspecialchars($row['Email'], ENT_QUOTES) ?>">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <a href="?delete=<?= urlencode($row['id']) ?>"
-                                            class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Are you sure?')">
-                                            <i class="bi bi-trash"></i>
+
+                                        <!-- Deactivate / Activate Button -->
+                                        <a href="?toggle=<?= urlencode($row['id']) ?>"
+                                            class="btn btn-sm <?= $isActive ? 'btn-outline-danger' : 'btn-outline-success' ?>"
+                                            onclick="return confirm('Are you sure to <?= $isActive ? 'deactivate' : 'reactivate' ?> this account?')"
+                                            title="<?= $statusTitle ?>">
+                                            <i class="bi <?= $statusIcon ?>"></i>
                                         </a>
                                     </td>
 

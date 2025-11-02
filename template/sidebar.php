@@ -6,7 +6,7 @@
                 src="<?= base_url('assets/img/AdminLTELogo.png') ?>"
                 alt="AdminLTE Logo"
                 class="brand-image opacity-75 shadow" />
-            <span class="brand-text fw-light"><?= $title ?></span>
+            <span class="brand-text fw-light"><?= $userInfo['Role'] === 'admin' ? 'Admin Dashboard' : 'Staff Dashboard' ?></span>
         </a>
     </div>
 
@@ -28,6 +28,12 @@
                         <a href="<?= base_url('view/admin/dashboard.php') ?>" class="nav-link <?= $page == 'dashboard' ? 'active' : '' ?>">
                             <i class="nav-icon bi bi-palette"></i>
                             <p>Dashboard</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('view/staff/manage-product.php') ?>" class="nav-link <?= $subPage == 'manage-product' ? 'active' : '' ?>">
+                            <i class="nav-icon bi bi-box-seam"></i>
+                            <p>Manage Products</p>
                         </a>
                     </li>
 

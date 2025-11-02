@@ -93,6 +93,11 @@ if ($user_id) {
                                     </a>
                                 </li>
                                 <li>
+                                    <a class="dropdown-item" href="<?= base_url('view/customer/my-orders.php') ?>">
+                                        <i class="bi bi-cart me-2 text-warning"></i> My Order
+                                    </a>
+                                </li>
+                                <li>
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
@@ -115,15 +120,41 @@ if ($user_id) {
     </nav>
 
     <!-- Alerts -->
-    <?php if (isset($_SESSION['success_message'])) : ?>
-        <div class="alert alert-success"><?= $_SESSION['success_message'];
-                                            unset($_SESSION['success_message']); ?></div>
+    <?php if (isset($_SESSION['success_message']) || isset($_SESSION['error_message']) || isset($_SESSION['warning_message'])): ?>
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <?php if (isset($_SESSION['success_message'])): ?>
+                        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3 text-center" role="alert">
+                            <!-- <i class="bi bi-check-circle-fill me-2"></i> -->
+                            <?= htmlspecialchars($_SESSION['success_message']); ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['success_message']); ?>
+                    <?php endif; ?>
+
+                    <?php if (isset($_SESSION['error_message'])): ?>
+                        <div class="alert alert-danger alert-dismissible fade show shadow-sm rounded-3 text-center" role="alert">
+                            <!-- <i class="bi bi-exclamation-triangle-fill me-2"></i> -->
+                            <?= htmlspecialchars($_SESSION['error_message']); ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['error_message']); ?>
+
+                    <?php endif; ?>
+                    <?php if (isset($_SESSION['warning_message'])): ?>
+                        <div class="alert alert-warning alert-dismissible fade show shadow-sm rounded-3 text-center" role="alert">
+                            <!-- <i class="bi bi-exclamation-triangle-fill me-2"></i> -->
+                            <?= htmlspecialchars($_SESSION['warning_message']); ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['warning_message']); ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
     <?php endif; ?>
 
-    <?php if (isset($_SESSION['error_message'])) : ?>
-        <div class="alert alert-danger"><?= $_SESSION['error_message'];
-                                        unset($_SESSION['error_message']); ?></div>
-    <?php endif; ?>
 
     <!-- LOGOUT CONFIRMATION MODAL -->
     <div class="modal fade" id="modalSignOut" tabindex="-1" aria-labelledby="modalSignOutLabel" aria-hidden="true">

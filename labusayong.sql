@@ -16,6 +16,8 @@ CREATE TABLE `users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `FullName` VARCHAR(255) NOT NULL,
   `Email` VARCHAR(200) NOT NULL UNIQUE,
+  `address` VARCHAR(100) DEFAULT NULL,
+  `phone` INT DEFAULT NULL ,
   `Password` TEXT NOT NULL,
   `Role` ENUM('admin','staff','customer') NOT NULL DEFAULT 'customer',
   `Image` TEXT,
@@ -45,12 +47,21 @@ CREATE TABLE `products` (
 CREATE TABLE `orders` (
   `order_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
+  `staff_id` INT DEFAULT NULL,
   `order_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` ENUM('Pending','Processing','Completed','Cancelled') DEFAULT 'Pending',
+  `status` ENUM('Pending','Processing','Shipped','Completed','Cancelled') DEFAULT 'Pending',
+  `payment_method` VARCHAR(50) DEFAULT NULL,
+  `shipping_address` TEXT DEFAULT NULL,
+  `subtotal` DECIMAL(10,2) DEFAULT 0,
+  `shipping_fee` DECIMAL(10,2) DEFAULT 0,
   `total_price` DECIMAL(10,2) DEFAULT 0,
+  `notes` TEXT DEFAULT NULL,
   PRIMARY KEY (`order_id`),
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+  FOREIGN KEY (`staff_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 -- --------------------------------------------------------
 -- ORDER ITEMS TABLE
@@ -59,8 +70,13 @@ CREATE TABLE `order_items` (
   `order_item_id` INT NOT NULL AUTO_INCREMENT,
   `order_id` INT NOT NULL,
   `product_id` INT NOT NULL,
+  `variant_id` INT DEFAULT NULL,
   `quantity` INT NOT NULL,
   `price` DECIMAL(10,2) NOT NULL,
+  `color` VARCHAR(50) DEFAULT NULL,
+  `size` VARCHAR(50) DEFAULT NULL,
+  `pattern` VARCHAR(50) DEFAULT NULL,
+  `total` DECIMAL(10,2) GENERATED ALWAYS AS (`price` * `quantity`) STORED,
   PRIMARY KEY (`order_item_id`),
   FOREIGN KEY (`order_id`) REFERENCES `orders`(`order_id`) ON DELETE CASCADE,
   FOREIGN KEY (`product_id`) REFERENCES `products`(`product_id`) ON DELETE CASCADE
@@ -118,6 +134,24 @@ CREATE TABLE `chats` (
   PRIMARY KEY (`chat_id`),
   FOREIGN KEY (`sender_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `product_variants` (
+  `variant_id` INT NOT NULL AUTO_INCREMENT,
+  `product_id` INT NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`variant_id`),
+  FOREIGN KEY (`product_id`) REFERENCES `products`(`product_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `variant_options` (
+  `option_id` INT NOT NULL AUTO_INCREMENT,
+  `variant_id` INT NOT NULL,
+  `option_name` VARCHAR(100) NOT NULL,
+  `option_value` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`option_id`),
+  FOREIGN KEY (`variant_id`) REFERENCES `product_variants`(`variant_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 COMMIT;

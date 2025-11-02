@@ -67,6 +67,10 @@ include '../../template/sidebar.php';
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="mb-4"><i class="bi bi-person-badge me-2"></i><?= $pageName ?></h1>
+                <button class="btn btn-warning px-3 changePasswordBtn"
+                    title="Edit Password">
+                    <i class="bi bi-shield-lock me-1"></i> Change Password
+                </button>
             </div>
 
             <!-- Alerts -->
@@ -84,6 +88,7 @@ include '../../template/sidebar.php';
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0"><i class="bi bi-person-fill me-2"></i>My Profile</h5>
+
                 </div>
                 <div class="card-body">
                     <div class="row g-4 align-items-center">
@@ -136,4 +141,76 @@ include '../../template/sidebar.php';
     </div>
 </main>
 
+<!-- change password modal -->
+<div class="modal fade" id="chgPassModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" enctype="multipart/form-data" action="../auth/update-password.php" class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="id" id="user_id">
+                <div class="row">
+                    <label class="form-label fw-semibold">Current Password</label>
+                    <div class="input-group">
+                        <input type="password" name="current_password" class="form-control" required>
+                        <button type="button" class="btn btn-outline-secondary toggle-password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="form-label fw-semibold">New Password</label>
+                    <div class="input-group">
+                        <input type="password" name="new_password" class="form-control" required>
+                        <button type="button" class="btn btn-outline-secondary toggle-password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="form-label fw-semibold">Confirm Password</label>
+                    <div class="input-group">
+                        <input type="password" name="confirm_password" class="form-control" required>
+                        <button type="button" class="btn btn-outline-secondary toggle-password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-center m-3">
+                <button type="submit" class="btn btn-warning px-4">
+                    <i class="bi bi-save me-1"></i> Update Password
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            const icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        });
+    });
+
+    document.querySelectorAll('.changePasswordBtn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const form = document.querySelector('#chgPassModal form');
+
+            if (form) form.reset();
+            new bootstrap.Modal(document.getElementById('chgPassModal')).show();
+        })
+    })
+</script>
 <?php include '../../template/footer.php'; ?>

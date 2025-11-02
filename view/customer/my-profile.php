@@ -24,7 +24,10 @@ $imagePath = !empty($user['Image'])
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
     $imagePath = $user['Image'];
+
 
     // Handle image upload
     if (!empty($_FILES['image']['name'])) {
@@ -45,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
 
     // Update DB
     $update = "UPDATE users 
-               SET FullName='$fullname', Email='$email', Image='$imagePath', UpdatedAt=NOW() 
+               SET FullName='$fullname', Email='$email', Image='$imagePath', UpdatedAt=NOW() , address='$address', phone='$phone'
                WHERE id='$user_id'";
     if (mysqli_query($conn, $update)) {
         mysqli_query($conn, "INSERT INTO logs (user_id, action) VALUES ('$user_id', 'Updated own profile')");
@@ -115,6 +118,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
                     </div>
 
                     <div class="row mb-3">
+                        <div class="col-sm-4 fw-semibold">Address:</div>
+                        <div class="col-sm-8">
+                            <span class="view-mode"><?= htmlspecialchars($user['address']) ?></span>
+                            <input type="text" name="address" class="form-control edit-mode d-none"
+                                value="<?= htmlspecialchars($user['address']) ?>">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 fw-semibold">Phone No:</div>
+                        <div class="col-sm-8">
+                            <span class="view-mode"><?= htmlspecialchars($user['phone']) ?></span>
+                            <input type="number" name="phone" class="form-control edit-mode d-none"
+                                value="<?= htmlspecialchars($user['phone']) ?>">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
                         <div class="col-sm-4 fw-semibold">Role:</div>
                         <div class="col-sm-8 text-capitalize"><?= htmlspecialchars($user['Role']) ?></div>
                     </div>
@@ -135,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
         <hr class="my-5">
 
         <!-- Change Password Section -->
-        <div class="mt-4">
+        <div class="mt-4" id="passSectionVisibility">
             <h4 class="fw-semibold text-primary mb-3">
                 <i class="bi bi-lock-fill me-2"></i>Change Password
             </h4>
@@ -187,8 +207,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     document.getElementById('editBtn').addEventListener('click', function() {
         document.querySelectorAll('.view-mode').forEach(el => el.classList.toggle('d-none'));
         document.querySelectorAll('.edit-mode').forEach(el => el.classList.toggle('d-none'));
+        const passSectionVisibility = document.getElementById('passSectionVisibility');
+        passSectionVisibility.hidden = !passSectionVisibility.hidden;
         this.classList.toggle('btn-outline-success');
         this.classList.toggle('btn-success');
+
     });
 
     document.getElementById('cancelEdit').addEventListener('click', function() {
@@ -218,5 +241,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
 
 <?php
 require_once 'footer.php';
-ob_end_flush(); // ✅ End output buffering safely
+ob_end_flush();
 ?>

@@ -75,6 +75,8 @@ function getRoutePermission($url, $role)
             'staff/manage-product.php',
             'staff/chat-list.php',
             'staff/order-list.php',
+            'staff/manage-product-details.php',
+            'product-detail.php'
             // 'staff/manage-product.php',
 
         ],
@@ -83,14 +85,20 @@ function getRoutePermission($url, $role)
             'staff/chat-list.php',
             'staff/order-list.php',
             'admin/manage-customer.php',
-            'staff/staff-profile.php'
+            'staff/staff-profile.php',
+            'staff/manage-product-details.php',
+            'product-detail.php'
         ],
         'customer' => [
             'index.php',
             'shop-listing.php',
             'cart.php',
             'customer/my-profile.php',
-            'product-detail.php'
+            'product-detail.php',
+            'checkout.php',
+            'success-order.php',
+            'my-orders.php',
+            'order-details.php'
         ],
     ];
 

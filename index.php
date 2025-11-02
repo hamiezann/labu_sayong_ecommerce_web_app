@@ -1,14 +1,50 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'includes/config.php';
 include 'view/customer/header.php';
 
-$productList = mysqli_query($conn, "SELECT * FROM products LIMIT 4");
-$title = "Labu Sayong - Home";
-// if (isset($_SESSION['id'])) {
-//     $userId = $_SESSION['id'];
-//     $userData = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id='$userId'"));
+// if ($_SESSION['user_id']) {
+//     $productList = mysqli_query($conn, "SELECT p.* ,w.* FROM products p INNER JOIN wishlist w ON p.product_id = w.product_id WHERE w.user_id = '$user_id' LIMIT 12");
+// } else {
+//     $productList = mysqli_query($conn, "SELECT * FROM products LIMIT 12");
 // }
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $productList = mysqli_query($conn, "
+        SELECT p.*, 
+               CASE WHEN w.product_id IS NOT NULL THEN 1 ELSE 0 END AS in_wishlist
+        FROM products p
+        LEFT JOIN wishlist w 
+        ON p.product_id = w.product_id AND w.user_id = '$user_id'
+        LIMIT 12
+    ");
+} else {
+    $productList = mysqli_query($conn, "SELECT p.*, 0 AS in_wishlist FROM products p LIMIT 12");
+}
+
+$title = "Labu Sayong - Home";
+
 ?>
+<style>
+    .carousel-control-prev,
+    .carousel-control-next {
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 100px;
+        background-color: rgba(118, 112, 112, 0.4);
+        border-radius: 6px;
+    }
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        background-color: rgba(118, 112, 112, 0.4);
+    }
+</style>
+
 
 <!-- HERO SECTION -->
 <section class="hero-section" id="home">
@@ -41,43 +77,86 @@ $title = "Labu Sayong - Home";
             <h2 class="section-title">Our Classes</h2>
             <p class="section-subtitle">Handpicked traditional crafts from master artisans</p>
         </div>
-        <div class="row g-4">
-            <?php
-            if (mysqli_num_rows($productList) > 0):
-                while ($product = mysqli_fetch_assoc($productList)):
-                    $imagePath = !empty($product['image']) ? base_url($product['image']) : base_url('assets/img/no_image.png');
-            ?>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card product-card">
-                            <img src="<?= $imagePath ?>" alt="<?= htmlspecialchars($product['name']) ?>">
-                            <div class="card-body">
-                                <h5><?= htmlspecialchars($product['name']) ?></h5>
-                                <p class="text-muted mb-0" style="font-size: 0.9rem;">Traditional Craft</p>
-                                <p class="product-price">RM <?= number_format($product['price'], 2) ?></p>
-                                <div class="d-flex align-items-center gap-3">
-                                    <a href="<?= base_url('view/customer/product-detail.php?id=' . $product['product_id']) ?>" class="btn btn-view flex-grow-1">View Details</a>
-                                    <button class="btn btn-icon-fav">
-                                        <i class="bi bi-bag-heart-fill"></i>
-                                    </button>
-                                </div>
 
+        <?php if (mysqli_num_rows($productList) > 0): ?>
+            <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+
+                    <?php
+                    $products = [];
+                    while ($product = mysqli_fetch_assoc($productList)) {
+                        $products[] = $product;
+                    }
+
+                    $chunked = array_chunk($products, 4); // show 4 per slide
+                    $active = 'active';
+                    foreach ($chunked as $group):
+                    ?>
+                        <div class="carousel-item <?= $active ?>">
+                            <div class="row g-4">
+                                <?php foreach ($group as $product):
+                                    $imagePath = !empty($product['image'])
+                                        ? base_url($product['image'])
+                                        : base_url('assets/img/no_image.png');
+                                ?>
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="card product-card h-100 shadow-sm">
+                                            <img src="<?= $imagePath ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="card-img-top" style="height:200px; object-fit:cover;">
+                                            <div class="card-body d-flex flex-column justify-content-between">
+                                                <div>
+                                                    <h5><?= htmlspecialchars($product['name']) ?></h5>
+                                                    <p class="text-muted mb-0" style="font-size: 0.9rem;">Traditional Craft</p>
+                                                    <p class="product-price">RM <?= number_format($product['price'], 2) ?></p>
+                                                </div>
+                                                <div class="d-flex align-items-center gap-3 mt-3">
+                                                    <a href="<?= base_url('view/customer/product-detail.php?id=' . $product['product_id']) ?>" class="btn btn-view flex-grow-1">View Details</a>
+                                                    <button class="btn btn-icon-fav wishlist-btn"
+                                                        data-product-id="<?= $product['product_id'] ?>">
+                                                        <i class="bi <?= $product['in_wishlist'] ? 'bi-heart-fill text-danger' : 'bi-heart' ?> fs-5"></i>
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
-                    </div>
-                <?php
-                endwhile;
-            else:
-                ?>
-                <div class="col-12">
-                    <div class="text-center p-5">
-                        <i class="bi bi-inbox" style="font-size: 4rem; color: #cbd5e0;"></i>
-                        <p class="text-muted mt-3">No products available yet. Check back soon!</p>
-                    </div>
+                    <?php
+                        $active = ''; // only first active
+                    endforeach;
+                    ?>
                 </div>
-            <?php endif; ?>
-        </div>
+
+                <!-- Carousel controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next bg-grey" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        <?php else: ?>
+            <div class="text-center p-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: #cbd5e0;"></i>
+                <p class="text-muted mt-3">No products available yet. Check back soon!</p>
+            </div>
+        <?php endif; ?>
+
+        <!-- “View More” button -->
+        <?php if (mysqli_num_rows($productList) >= 6): // if more than 8 products 
+        ?>
+            <div class="text-center mt-5">
+                <a href="<?= base_url('view/shop-listing.php') ?>" class="btn btn-outline-primary btn-lg">
+                    View More Products
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
+
 
 <!-- ABOUT SECTION -->
 <section class="about-section" id="about">
@@ -197,7 +276,7 @@ $title = "Labu Sayong - Home";
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Smooth Scroll -->
 <script>
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -212,7 +291,58 @@ $title = "Labu Sayong - Home";
             }
         });
     });
+
+
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const icon = this.querySelector('i');
+
+            fetch('function/toggle-wishlist.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `product_id=${productId}`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.action === 'added') {
+                            icon.classList.remove('bi-heart');
+                            icon.classList.add('bi-heart-fill', 'text-danger');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Added to Wishlist!',
+                                timer: 1200,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            icon.classList.remove('bi-heart-fill', 'text-danger');
+                            icon.classList.add('bi-heart');
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Removed from Wishlist',
+                                timer: 1200,
+                                showConfirmButton: false
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Login Required',
+                            text: data.message,
+                        });
+                    }
+                })
+                .catch(async (err) => {
+                    const text = await err?.text?.();
+                    console.error('Wishlist toggle error:', err, text);
+                });
+        });
+    });
 </script>
+
 
 </body>
 

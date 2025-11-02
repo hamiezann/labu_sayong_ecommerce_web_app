@@ -23,7 +23,7 @@ if (isset($_POST['sign-in'])) {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
 
-    $query = "SELECT * FROM users WHERE Email='$email' LIMIT 1";
+    $query = "SELECT * FROM users WHERE Email='$email' AND acc_status=1 LIMIT 1";
     $result = mysqli_query($conn, $query);
 
     if ($result && mysqli_num_rows($result) > 0) {
@@ -35,19 +35,30 @@ if (isset($_POST['sign-in'])) {
             $_SESSION['user_name'] = $user['FullName'];
             $_SESSION['user_role'] = $user['Role'];
 
-            sessionMessage('success', 'Welcome back, ' . $user['FullName'] . '!');
+            // sessionMessage('success', 'Welcome back, ' . $user['FullName'] . '!');
+            if ($user['changeDefPass'] == 0) {
+                $_SESSION['warning_message'] = "Welcome back, don't forget to change your password for your account safety!";
+            } else {
+                $_SESSION['success_message'] = "Welcome back " . htmlspecialchars($user['FullName']) . "!";
+            }
+            // var_dump($_SESSION);
+            // exit();
+
+            header("Location: register.php");
             if ($user['Role'] == 'admin') {
                 redirect('view/admin/dashboard.php');
             } else if ($user['Role'] == 'staff') {
-                redirect('view/staff/manage-product.php');
+                redirect('view/admin/manage-customer.php');
             } else {
                 redirect('index.php');
             }
         } else {
-            sessionMessage('error', 'Invalid password.');
+            // sessionMessage('error', 'Invalid password.');
+            $_SESSION['error_message'] = "❌ Invalid password.";
         }
     } else {
-        sessionMessage('error', 'User not found.');
+        // sessionMessage('error', 'User not found.');
+        $_SESSION['error_message'] = "❌ User not found.";
     }
 }
 ?>
@@ -64,7 +75,58 @@ if (isset($_POST['sign-in'])) {
 
 <body class="login-page bg-body-secondary">
 
-    <?php require_once '../../includes/message.php'; ?>
+    <?php
+    // After session_start() and including SweetAlert JS in the page head
+    if (isset($_SESSION['success_message'])) {
+        $msg = $_SESSION['success_message'];
+        unset($_SESSION['success_message']);
+        echo "<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: " . json_encode($msg) . ",
+        confirmButtonColor: '#198754'
+      }).then(() => {
+        // optional: auto-focus login email input
+        const el = document.querySelector('input[name=\"email\"]');
+        if (el) el.focus();
+      });
+    });
+    </script>";
+    }
+
+    if (isset($_SESSION['error_message'])) {
+        $msg = $_SESSION['error_message'];
+        unset($_SESSION['error_message']);
+        echo "<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: " . json_encode($msg) . ",
+        confirmButtonColor: '#dc3545'
+      });
+    });
+    </script>";
+    }
+
+    if (isset($_SESSION['warning_message'])) {
+        $msg = $_SESSION['warning_message'];
+        unset($_SESSION['warning_message']);
+        echo "<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: " . json_encode($msg) . ",
+        confirmButtonColor: '#c3e73fff'
+      });
+    });
+    </script>";
+    }
+    ?>
+
 
     <div class="login-box">
         <div class="login-logo">

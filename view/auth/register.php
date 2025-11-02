@@ -15,16 +15,23 @@ if (isset($_POST['register'])) {
 
     $check = mysqli_query($conn, "SELECT * FROM users WHERE Email='$email'");
     if (mysqli_num_rows($check) > 0) {
-        sessionMessage('error', 'Email already registered.');
+        // sessionMessage('error', 'Email already registered.');
+        $_SESSION['error_message'] = "❌ Email already registered.";
+        header("Location: register.php");
+        exit();
     } else {
         $query = "INSERT INTO users (FullName, Email, Password, Role) 
                   VALUES ('$fullname', '$email', '$password', '$role')";
         if (mysqli_query($conn, $query)) {
-            sessionMessage('success', 'Account created successfully! Please login.');
-            redirect('view/auth/login.php');
+            // sessionMessage('success', 'Account created successfully! Please login.');
+            $_SESSION['success_message'] = "✅ Account created successfully! Please login.";
+            header("Location: login.php");
         } else {
-            sessionMessage('error', 'Registration failed.');
+            // sessionMessage('error', 'Registration failed.');
+            $_SESSION['error_message'] = "❌ Registration failed..";
+            header("Location: register.php");
         }
+        exit();
     }
 }
 ?>
@@ -41,7 +48,34 @@ if (isset($_POST['register'])) {
 
 <body class="register-page bg-body-secondary">
 
-    <?php require_once '../../includes/message.php'; ?>
+
+    <!-- Alert message -->
+    <?php if (isset($_SESSION['success_message'])) : ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '<?= addslashes($_SESSION['success_message']); ?>',
+                    confirmButtonColor: '#198754',
+                });
+            });
+        </script>
+    <?php unset($_SESSION['success_message']);
+    endif; ?>
+    <?php if (isset($_SESSION['error_message'])) : ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '<?= addslashes($_SESSION['error_message']); ?>',
+                    confirmButtonColor: '#dc3545',
+                });
+            });
+        </script>
+    <?php unset($_SESSION['error_message']);
+    endif; ?>
 
     <div class="register-box">
         <div class="register-logo">

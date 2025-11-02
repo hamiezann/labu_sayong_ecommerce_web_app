@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+$currentRole = $_SESSION['user_role'] === 'staff';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $current_password = mysqli_real_escape_string($conn, $_POST['current_password']);
@@ -23,7 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($new_password !== $confirm_password) {
         $_SESSION['error_message'] = "❌ New password and confirm password do not match.";
-        header("Location: ../customer/my-profile.php");
+        if ($currentRole) {
+            header("Location: ../staff/staff-profile.php");
+        } else {
+            header("Location: ../customer/my-profile.php");
+        }
         exit();
     }
 
@@ -33,14 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$user || !password_verify($current_password, $user['Password'])) {
         $_SESSION['error_message'] = "❌ Current password is incorrect.";
-        header("Location: ../customer/my-profile.php");
+        if ($currentRole) {
+            header("Location: ../staff/staff-profile.php");
+        } else {
+            header("Location: ../customer/my-profile.php");
+        }
         exit();
     }
 
     // Hash and update new password
     $hashedPassword = password_hash($new_password, PASSWORD_BCRYPT);
 
-    $update = mysqli_query($conn, "UPDATE users SET Password='$hashedPassword', UpdatedAt=NOW() WHERE id='$user_id'");
+    $update = mysqli_query($conn, "UPDATE users SET Password='$hashedPassword', UpdatedAt=NOW(), changeDefPass =1 WHERE id='$user_id'");
 
     if ($update) {
         mysqli_query($conn, "INSERT INTO logs (user_id, action) VALUES ('$user_id', 'Updated password')");
@@ -49,6 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['error_message'] = "❌ Failed to update password. Please try again.";
     }
 
-    header("Location: ../customer/my-profile.php");
+    if ($currentRole) {
+        header("Location: ../staff/staff-profile.php");
+    } else {
+        header("Location: ../customer/my-profile.php");
+    }
     exit();
 }
