@@ -98,6 +98,11 @@ if ($user_id) {
                                     </a>
                                 </li>
                                 <li>
+                                    <a class="dropdown-item" href="<?= base_url('view/chat/client-chat-list.php') ?>">
+                                        <i class="bi bi-chat me-2 text-success"></i> My Chat
+                                    </a>
+                                </li>
+                                <li>
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>

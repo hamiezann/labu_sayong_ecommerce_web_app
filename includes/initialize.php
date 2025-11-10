@@ -40,6 +40,15 @@ function decode($data = '')
     return base64_decode($data);
 }
 
+function is_staff($user_id)
+{
+    global $conn;
+    $query = mysqli_query($conn, "SELECT role FROM users WHERE id='$user_id'");
+    $user = mysqli_fetch_assoc($query);
+    return in_array($user['role'], ['staff', 'manager', 'admin']);
+}
+
+
 // use for session message and integarte with sweetalert2
 function sessionMessage($status, $message)
 {
@@ -76,7 +85,11 @@ function getRoutePermission($url, $role)
             'staff/chat-list.php',
             'staff/order-list.php',
             'staff/manage-product-details.php',
-            'product-detail.php'
+            'product-detail.php',
+            'chat.php',
+            'chat-view.php',
+            'report.php',
+            'report-pdf.php',
             // 'staff/manage-product.php',
 
         ],
@@ -87,7 +100,9 @@ function getRoutePermission($url, $role)
             'admin/manage-customer.php',
             'staff/staff-profile.php',
             'staff/manage-product-details.php',
-            'product-detail.php'
+            'product-detail.php',
+            'chat.php',
+            'chat-view.php'
         ],
         'customer' => [
             'index.php',
@@ -98,7 +113,9 @@ function getRoutePermission($url, $role)
             'checkout.php',
             'success-order.php',
             'my-orders.php',
-            'order-details.php'
+            'order-details.php',
+            'chat.php',
+            'client-chat-list.php'
         ],
     ];
 

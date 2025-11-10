@@ -124,16 +124,29 @@ CREATE TABLE `logs` (
 -- --------------------------------------------------------
 -- CHAT TABLE (User Inquiries)
 -- --------------------------------------------------------
+-- CREATE TABLE `chats` (
+--   `chat_id` INT NOT NULL AUTO_INCREMENT,
+--   `sender_id` INT NOT NULL,
+--   `receiver_id` INT NOT NULL,
+--   `message` TEXT NOT NULL,
+--   `is_read` BOOLEAN DEFAULT FALSE,
+--   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   PRIMARY KEY (`chat_id`),
+--   FOREIGN KEY (`sender_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+--   FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE `chats` (
   `chat_id` INT NOT NULL AUTO_INCREMENT,
+  `session_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
-  `receiver_id` INT NOT NULL,
   `message` TEXT NOT NULL,
   `is_read` BOOLEAN DEFAULT FALSE,
+  `is_read_by_staff` BOOLEAN DEFAULT FALSE,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`chat_id`),
-  FOREIGN KEY (`sender_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+  FOREIGN KEY (`session_id`) REFERENCES `chat_sessions`(`session_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`sender_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `product_variants` (
@@ -153,6 +166,20 @@ CREATE TABLE `variant_options` (
   PRIMARY KEY (`option_id`),
   FOREIGN KEY (`variant_id`) REFERENCES `product_variants`(`variant_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `chat_sessions` (
+  `session_id` INT NOT NULL AUTO_INCREMENT,
+  `product_id` INT NOT NULL,
+  `customer_id` INT NOT NULL,
+  `assigned_staff_id` INT DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`session_id`),
+  FOREIGN KEY (`product_id`) REFERENCES `products`(`product_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`customer_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`assigned_staff_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 COMMIT;
 

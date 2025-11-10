@@ -115,16 +115,19 @@ include '../customer/header.php';
         <!-- LEFT: SHIPPING & PAYMENT -->
         <div class="col-md-7">
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-truck me-2"></i>Shipping Information</h5>
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <i class="bi bi-truck me-2"></i>
+                    <h5 class="mb-0">Shipping & Payment</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST">
+                        <!-- Address -->
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Shipping Address</label>
-                            <textarea name="address" class="form-control" rows="3" required></textarea>
+                            <textarea name="address" class="form-control" rows="3" placeholder="Enter your full address..." required></textarea>
                         </div>
 
+                        <!-- Shipping Option -->
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Shipping Option</label>
                             <select name="shipping_option" class="form-select" required>
@@ -134,20 +137,26 @@ include '../customer/header.php';
                             </select>
                         </div>
 
-                        <div class="mb-3">
+                        <!-- Payment Method (Fixed) -->
+                        <div class="mb-4">
                             <label class="form-label fw-semibold">Payment Method</label>
-                            <select name="payment_method" class="form-select">
-                                <option value="Cash on Delivery">Cash on Delivery</option>
-                                <option value="Bank Transfer">Bank Transfer</option>
-                                <option value="FPX">FPX Online Payment</option>
-                            </select>
+                            <div class="alert alert-info d-flex align-items-center" role="alert">
+                                <i class="bi bi-qr-code fs-4 me-3"></i>
+                                <div>
+                                    <strong>QR Transfer</strong> is the default and only available payment method.
+                                    <br><small>Please scan the QR code on the right to complete payment.</small>
+                                </div>
+                            </div>
+                            <input type="hidden" name="payment_method" value="QR Transfer">
                         </div>
 
+                        <!-- Notes -->
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Order Notes</label>
                             <textarea name="notes" class="form-control" rows="3" placeholder="Additional instructions or comments..."></textarea>
                         </div>
 
+                        <!-- Submit -->
                         <button type="submit" name="place_order" class="btn btn-success w-100 py-2">
                             <i class="bi bi-check-circle me-2"></i>Place Order
                         </button>
@@ -156,8 +165,23 @@ include '../customer/header.php';
             </div>
         </div>
 
-        <!-- RIGHT: ORDER SUMMARY -->
+        <!-- RIGHT: QR & ORDER SUMMARY -->
         <div class="col-md-5">
+            <!-- QR PAYMENT BOX -->
+            <div class="card shadow-sm mb-4 text-center">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-qr-code me-2"></i>QR Payment</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-2">Scan the QR code below to make payment:</p>
+                    <img src="<?= base_url('assets/img/qr-payment.jpg') ?>" alt="QR Code" class="img-fluid rounded shadow-sm mb-3" style="max-width: 250px;">
+                    <p class="fw-semibold mb-0">Account Name: Labu Sayong Ceramics</p>
+                    <p class="text-muted small mb-0">Bank: Maybank | Acc No: 1234567890</p>
+                    <p class="text-success small mt-2"><i class="bi bi-shield-check"></i> Secure QR Transfer Enabled</p>
+                </div>
+            </div>
+
+            <!-- ORDER SUMMARY -->
             <div class="card shadow-sm">
                 <div class="card-header bg-dark text-white">
                     <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Order Summary</h5>
@@ -200,8 +224,6 @@ include '../customer/header.php';
                         <span>Shipping (calculated at next step)</span>
                         <strong>-</strong>
                     </div>
-
-
                     <hr>
                     <div class="text-end">
                         <em class="text-muted small">Total will be updated after selecting shipping option.</em>
@@ -211,6 +233,28 @@ include '../customer/header.php';
         </div>
     </div>
 </div>
+
+<style>
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #00c49a, #00a37a);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<?php include '../customer/footer.php'; ?>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 

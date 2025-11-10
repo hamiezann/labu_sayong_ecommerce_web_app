@@ -128,9 +128,14 @@ $imagePath = !empty($product['image'])
                                     <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseQty(this)">+</button>
                                 </div>
 
-                                <button type="submit" class="btn btn-success px-4">
+                                <button type="submit" class="btn btn-success px-2">
                                     <i class="bi bi-cart-plus"></i> Add to Cart
                                 </button>
+                                <a href="<?= base_url('view/chat/chat-now.php?product_id=' . $product['product_id']) ?>"
+                                    class="btn btn-warning px-4">
+                                    <i class="bi bi-chat-right-text-fill"></i> Chat Now
+                                </a>
+
                             </div>
                         </form>
                     <?php else: ?>

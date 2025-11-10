@@ -13,6 +13,7 @@ body {
 /* Navbar */
 .navbar {
   background: rgba(255, 255, 255, 0.95) !important;
+  /* background: #efe9e3 !important; */
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
   padding: 1rem 0;
@@ -70,7 +71,8 @@ body {
   display: flex;
   align-items: center;
   /* background: linear-gradient(135deg, #4b0082 0%, #ffd700 100%); */
-  background: #ffc107;
+  background: #efe9e3 !important;
+  /* background: #c9b59c !important; */
   position: relative;
   overflow: hidden;
   padding: 4rem 0;
@@ -106,14 +108,17 @@ body {
 .hero-content h1 {
   font-size: 3.5rem;
   font-weight: 700;
-  color: white;
+  /* color: white; */
+  color: black;
+  /* color: #c9b59c; */
   margin-bottom: 1.5rem;
   line-height: 1.2;
 }
 
 .hero-content p {
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9);
+  /* color: rgba(255, 255, 255, 0.9); */
+  color: #847159;
   margin-bottom: 2rem;
 }
 
@@ -136,7 +141,7 @@ body {
 
 .btn-explore {
   background: white;
-  color: #764ba2;
+  color: #c9b59c;
   border-radius: 30px;
   padding: 0.8rem 2.5rem;
   border: none;
@@ -148,7 +153,7 @@ body {
 .btn-explore:hover {
   transform: translateY(-3px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-  color: white;
+  color: black;
 }
 
 /* Section Styling */
@@ -210,7 +215,7 @@ body {
 
 .btn-view {
   /* background: linear-gradient(135deg, #ffdd19 0%, #ffc300 100%); */
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  background: linear-gradient(135deg, #e6e2dd 0%, #c9b59c 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -228,8 +233,9 @@ body {
 /* About Section */
 .about-section {
   padding: 5rem 0;
-  /* background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); */
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  background: linear-gradient(135deg, #e6e2dd 0%, #dcc7aa 100%);
+
+  /* background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); */
   color: white;
 }
 
@@ -239,18 +245,20 @@ body {
 }
 
 .feature-card {
-  background: rgba(255, 255, 255, 0.15);
+  /* background: rgba(255, 255, 255, 0.15); */
+  background: #c9b59c;
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 2rem;
   text-align: center;
   transition: all 0.3s;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
 .feature-card:hover {
   background: rgba(255, 255, 255, 0.25);
   transform: translateY(-5px);
+  color: black;
 }
 
 .feature-icon {
@@ -272,7 +280,8 @@ body {
 
 .contact-card {
   /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  /* background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); */
+  background: #c9b59c;
   color: white;
   border-radius: 20px;
   padding: 3rem;
@@ -312,7 +321,8 @@ body {
 }
 
 .btn-send {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  background: linear-gradient(135deg, #c9b59c 0%, #fbd38d 100%);
   color: white;
   border: none;
   border-radius: 10px;

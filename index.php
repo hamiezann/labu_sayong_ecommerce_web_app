@@ -5,12 +5,6 @@ ini_set('display_errors', 1);
 
 require_once 'includes/config.php';
 include 'view/customer/header.php';
-
-// if ($_SESSION['user_id']) {
-//     $productList = mysqli_query($conn, "SELECT p.* ,w.* FROM products p INNER JOIN wishlist w ON p.product_id = w.product_id WHERE w.user_id = '$user_id' LIMIT 12");
-// } else {
-//     $productList = mysqli_query($conn, "SELECT * FROM products LIMIT 12");
-// }
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
     $productList = mysqli_query($conn, "
@@ -149,7 +143,7 @@ $title = "Labu Sayong - Home";
         <?php if (mysqli_num_rows($productList) >= 6): // if more than 8 products 
         ?>
             <div class="text-center mt-5">
-                <a href="<?= base_url('view/shop-listing.php') ?>" class="btn btn-outline-primary btn-lg">
+                <a href="<?= base_url('view/shop-listing.php') ?>" class="btn btn-send btn-lg">
                     View More Products
                 </a>
             </div>

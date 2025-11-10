@@ -33,7 +33,7 @@
                     <li class="nav-item">
                         <a href="<?= base_url('view/staff/manage-product.php') ?>" class="nav-link <?= $subPage == 'manage-product' ? 'active' : '' ?>">
                             <i class="nav-icon bi bi-box-seam"></i>
-                            <p>Manage Products</p>
+                            <p>Product Management</p>
                         </a>
                     </li>
 
@@ -67,20 +67,26 @@
                     <li class="nav-item">
                         <a href="<?= base_url('view/admin/manage-customer.php') ?>" class="nav-link <?= $subPage == 'manage-customer' ? 'active' : '' ?>">
                             <i class="nav-icon bi bi-people"></i>
-                            <p>Manage Client</p>
+                            <p>Client Management</p>
                         </a>
                     </li>
                     <!-- product management -->
                     <li class="nav-item">
                         <a href="<?= base_url('view/staff/manage-product.php') ?>" class="nav-link <?= $subPage == 'manage-product' ? 'active' : '' ?>">
                             <i class="nav-icon bi bi-box-seam"></i>
-                            <p>Manage Products</p>
+                            <p>Product Management</p>
                         </a>
                     </li>
                 <?php endif; ?>
 
                 <!-- order management -->
-                <li class="nav-item <?= $page == 'order' ? 'menu-open' : '' ?>">
+                <li class="nav-item">
+                    <a href="<?= base_url('view/staff/order-list.php') ?>" class="nav-link <?= $subPage == 'view-orders' ? 'active' : '' ?>">
+                        <i class="nav-icon bi bi-cart-check"></i>
+                        <p>Order Management</p>
+                    </a>
+                </li>
+                <!-- <li class="nav-item <?= $page == 'order' ? 'menu-open' : '' ?>">
                     <a href="#" class="nav-link <?= $page == 'order' ? 'active' : '' ?>">
                         <i class="nav-icon bi bi-cart-check"></i>
                         <p>
@@ -102,10 +108,16 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> -->
 
                 <!-- chat / inquiries -->
-                <li class="nav-item <?= $page == 'chat' ? 'menu-open' : '' ?>">
+                <li class="nav-item">
+                    <a href="<?= base_url('view/staff/chat-list.php') ?>" class="nav-link <?= $subPage == 'chat-list' ? 'active' : '' ?>">
+                        <i class="nav-icon bi bi-chat-dots"></i>
+                        <p> Chat / Inquiries</p>
+                    </a>
+                </li>
+                <!-- <li class="nav-item <?= $page == 'chat' ? 'menu-open' : '' ?>">
                     <a href="#" class="nav-link <?= $page == 'chat' ? 'active' : '' ?>">
                         <i class="nav-icon bi bi-chat-dots"></i>
                         <p>
@@ -127,7 +139,7 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> -->
 
             </ul>
         </nav>
