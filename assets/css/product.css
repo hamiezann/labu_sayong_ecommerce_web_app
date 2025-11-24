@@ -282,6 +282,84 @@ body {
   box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
 }
 
+.btn-add-cart {
+  background: linear-gradient(135deg, #edc493 0%, #c9b59c 100%);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+  text-decoration: none;
+}
+
+.btn-add-cart:hover {
+  background: linear-gradient(135deg, #c9b59c 0%, #edc493 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+  color: white;
+  text-decoration: none;
+}
+
+.btn-add-cart:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+.btn-add-cart i {
+  font-size: 1.1em;
+}
+
+.back-success-custom {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.back-warning-custom {
+  background: linear-gradient(135deg, yellow 0%, #e5eb7d 100%);
+}
+.back-danger-custom {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.back-info-custom {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.btn-message {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+  text-decoration: none;
+}
+.btn-message:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+  color: white;
+  text-decoration: none;
+}
+
+.btn-message:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+.btn-message i {
+  font-size: 1.1em;
+}
+
 .product-badge {
   position: absolute;
   top: 1rem;

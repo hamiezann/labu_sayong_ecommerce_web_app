@@ -58,7 +58,7 @@ include '../customer/header.php';
 
     <!-- Order Summary -->
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <div class="card-header back-warning-custom text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Order Summary</h5>
             <span class="badge bg-light text-dark px-3 py-2"><?= htmlspecialchars($order['status']) ?></span>
         </div>
@@ -79,7 +79,7 @@ include '../customer/header.php';
 
     <!-- Order Items -->
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-dark text-white">
+        <div class="card-header back-info-custom text-white">
             <h5 class="mb-0"><i class="bi bi-bag-check me-2"></i>Ordered Items</h5>
         </div>
         <div class="card-body">
@@ -130,7 +130,7 @@ include '../customer/header.php';
 
     <!-- Payment Summary -->
     <div class="card shadow-sm">
-        <div class="card-header bg-success text-white">
+        <div class="card-header back-success-custom text-white">
             <h5 class="mb-0"><i class="bi bi-cash-stack me-2"></i>Payment Summary</h5>
         </div>
         <div class="card-body">

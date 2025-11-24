@@ -2,9 +2,8 @@
         <div class="float-end d-none d-sm-inline">Home</div>
         <strong>
             Copyright &copy; <?= date('Y') ?>&nbsp;
-            <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>
 
-            | labu Sayong Web App by<a href="" class="text-decoration-none"><B>T-Dev</B></a>
+            | CRAFTEASE
         </strong>
     </footer>
 

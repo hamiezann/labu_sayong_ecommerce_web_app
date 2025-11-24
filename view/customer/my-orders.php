@@ -31,6 +31,67 @@ include '../customer/header.php';
     <title>My Orders</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<style>
+    /* Custom table styling */
+    .table-custom {
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .table-custom thead th {
+        background: #f8f9fa;
+        font-weight: 600;
+        padding: 15px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .table-custom tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        background: #f1f5f9;
+    }
+
+    .table-custom td {
+        padding: 14px;
+        vertical-align: middle;
+    }
+
+    /* Rounded badge style */
+    .badge {
+        padding: 7px 12px;
+        font-size: 0.85rem;
+        border-radius: 30px;
+        color: white !important;
+    }
+
+    .back-success-custom {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .back-warning-custom {
+        background: linear-gradient(135deg, #facc15 0%, #e5eb7d 100%);
+        color: #333 !important;
+    }
+
+    .back-danger-custom {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    .back-info-custom {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+
+    /* Action button styling */
+    .btn-view-details {
+        border-radius: 25px;
+        padding: 6px 14px;
+        font-size: 0.85rem;
+    }
+</style>
 
 <body class="bg-light">
     <div class="container py-5">
@@ -38,7 +99,8 @@ include '../customer/header.php';
 
         <?php if ($result->num_rows > 0): ?>
             <div class="table-responsive">
-                <table class="table table-bordered align-middle">
+                <!-- <table class="table table-bordered align-middle"> -->
+                <table class="table table-bordered align-middle table-custom">
                     <thead class="table-light">
                         <tr>
                             <th>#Order ID</th>
@@ -57,13 +119,13 @@ include '../customer/header.php';
                                 <td>
                                     <?php
                                     $statusClass = [
-                                        'Pending' => 'warning',
-                                        'Processing' => 'info',
-                                        'Completed' => 'success',
-                                        'Cancelled' => 'danger'
+                                        'Pending' => 'back-warning-custom',
+                                        'Processing' => 'back-info-custom',
+                                        'Completed' => 'back-success-custom',
+                                        'Cancelled' => 'back-danger-custom'
                                     ][$row['status']] ?? 'secondary';
                                     ?>
-                                    <span class="badge bg-<?= $statusClass ?>"><?= $row['status'] ?></span>
+                                    <span class="badge <?= $statusClass ?>"><?= $row['status'] ?></span>
                                 </td>
                                 <td><?= htmlspecialchars($row['shipping_fee'] ?? '-') ?></td>
                                 <td><?= number_format($row['total_price'], 2) ?></td>

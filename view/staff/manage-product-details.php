@@ -71,10 +71,22 @@ if (isset($_POST['add_option'])) {
 
     $name = mysqli_real_escape_string($conn, $_POST['option_name']);
     $value = mysqli_real_escape_string($conn, $_POST['option_value']);
+    $variantImage = null;
 
+    if (!empty($_FILES['option_image']['name'])) {
+        $targetDir = "../../uploads/products/variants/";
+        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+
+        $fileName = time() . '_' . basename($_FILES['option_image']['name']);
+        $targetFile = $targetDir . $fileName;
+
+        if (move_uploaded_file($_FILES['option_image']['tmp_name'], $targetFile)) {
+            $variantImage = "uploads/products/variants/" . $fileName;
+        }
+    }
     mysqli_query($conn, "
-        INSERT INTO variant_options (variant_id, option_name, option_value)
-        VALUES ('$variantId', '$name', '$value')
+        INSERT INTO variant_options (variant_id, option_name, option_value, variant_image_url)
+        VALUES ('$variantId', '$name', '$value', '$variantImage')
     ");
     $_SESSION['success_message'] = "✅ Variant option added!";
     header("Location: manage-product-details.php?product_id=$productId");
@@ -166,8 +178,8 @@ $options = mysqli_query($conn, "
                         <h5 class="mb-0"><i class="bi bi-sliders me-2"></i>Variant Options</h5>
                     </div>
                     <div class="card-body">
-                        <form method="POST" class="row g-3">
-                            <div class="col-md-5">
+                        <form method="POST" enctype="multipart/form-data" class="row g-3">
+                            <div class="col-md-3">
                                 <label class="form-label">Option Type</label>
                                 <select name="option_name" id="typeSelect" class="form-select" required onchange="toggleValueInput()">
                                     <option value="">-- Select Type --</option>
@@ -176,9 +188,13 @@ $options = mysqli_query($conn, "
                                     <option value="Pattern">Pattern</option>
                                 </select>
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-3">
                                 <label class="form-label">Option Value</label>
                                 <input type="text" name="option_value" id="optionValue" class="form-control" placeholder="Enter value">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Option Image</label>
+                                <input id="image-form" type="file" name="option_image" accept="image/*" class="form-control">
                             </div>
                             <div class="col-md-2 text-end align-self-end">
                                 <button type="submit" name="add_option" class="btn btn-dark w-100">
@@ -195,6 +211,7 @@ $options = mysqli_query($conn, "
                                     <th>#</th>
                                     <th>Option Name</th>
                                     <th>Value</th>
+                                    <th>Variant Image</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -210,6 +227,14 @@ $options = mysqli_query($conn, "
                                                 <?= htmlspecialchars($opt['option_value']) ?>
                                             <?php else: ?>
                                                 <?= htmlspecialchars($opt['option_value']) ?>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <!-- image variant -->
+                                            <?php if (!empty($opt['variant_image_url'])): ?>
+                                                <img src="<?= base_url($opt['variant_image_url']) ?>" width="50" class="rounded">
+                                            <?php else: ?>
+                                                <span class="text-muted">— No Image —</span>
                                             <?php endif; ?>
                                         </td>
                                         <td>
@@ -242,7 +267,14 @@ $options = mysqli_query($conn, "
         const select = document.getElementById('typeSelect');
         const input = document.getElementById('optionValue');
         const selected = select.value;
-
+        const imageForm = document.getElementById('image-form');
+        if (selected === 'Size' || selected === 'Pattern') {
+            imageForm.style.display = 'none';
+            imageForm.style = 'Background-color: Red;';
+            imageForm.disabled = true;
+        } else {
+            imageForm.style.display = 'block';
+        }
         if (selected === 'Color') {
             input.type = 'color';
             input.placeholder = '';

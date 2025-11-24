@@ -5,7 +5,7 @@ $page = 'product';
 $subPage = 'manage-product';
 $pageName = 'Manage Products';
 
-// ✅ DELETE PRODUCT
+//  DELETE PRODUCT
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $result = mysqli_query($conn, "SELECT name, image FROM products WHERE product_id='$id'");
@@ -24,8 +24,7 @@ if (isset($_GET['delete'])) {
     header("Location: manage-product.php");
     exit();
 }
-
-// ✅ Fetch all products
+// Fetch all products
 $products = mysqli_query($conn, "SELECT * FROM products ORDER BY product_id DESC");
 
 include '../../template/header.php';
@@ -43,7 +42,6 @@ include '../../template/sidebar.php';
                 </a>
             </div>
 
-            <!-- ✅ ALERT MESSAGES -->
             <?php if (isset($_SESSION['success_message'])): ?>
                 <div class="alert alert-success alert-dismissible fade show">
                     <?= $_SESSION['success_message'];
@@ -52,7 +50,7 @@ include '../../template/sidebar.php';
                 </div>
             <?php endif; ?>
 
-            <!-- ✅ PRODUCT LIST -->
+
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i> Product List</h5>

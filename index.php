@@ -68,7 +68,7 @@ $title = "Labu Sayong - Home";
 <section class="products-section" id="products">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="section-title">Our Classes</h2>
+            <h2 class="section-title">Our Products</h2>
             <p class="section-subtitle">Handpicked traditional crafts from master artisans</p>
         </div>
 

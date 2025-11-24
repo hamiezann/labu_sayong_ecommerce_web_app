@@ -6,7 +6,12 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $user_id = $_SESSION['user_id'] ?? null;
-$cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+// $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+$cart_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(ci.cart_item_id) AS item_count
+    FROM carts c
+    LEFT JOIN cart_items ci ON c.cart_id = ci.cart_id
+    WHERE c.user_id = '$user_id'
+    GROUP BY c.cart_id"))['item_count'] ?? 0;
 
 if ($user_id) {
     $q = "SELECT * FROM users WHERE id = '$user_id' LIMIT 1";
@@ -31,7 +36,7 @@ if ($user_id) {
 
 <head>
     <meta charset="UTF-8">
-    <title><?= $title ?? 'Labu Sayong' ?></title>
+    <title><?= $title ?? 'CRAFTEASE' ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap 5 -->
@@ -56,7 +61,7 @@ if ($user_id) {
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand fw-semibold text-primary" href="<?= base_url('index.php') ?>">
-                <i class="bi bi-palette me-2"></i> Labu Sayong
+                <i class="bi bi-palette me-2"></i> CRAFTEASE
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

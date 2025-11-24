@@ -65,6 +65,14 @@ $items = $itemStmt->get_result();
             <h6><i class="bi bi-credit-card"></i> Payment Method</h6>
             <p><?= htmlspecialchars($order['payment_method'] ?? 'N/A') ?></p>
 
+            <h6><i class="bi bi-document-text"></i> Proof of Payment</h6>
+            <?php if ($order['proof_of_payment'] && file_exists('../../' . $order['proof_of_payment'])): ?>
+                <embed src="<?= base_url($order['proof_of_payment']) ?>" type="application/pdf" width="100%" height="400px">
+            <?php else: ?>
+                <p class="text-muted">No proof of payment uploaded.</p>
+            <?php endif; ?>
+
+
             <h6><i class="bi bi-person-gear"></i> Staff In Charge</h6>
             <p><?= htmlspecialchars($order['staff_name'] ?? '-') ?></p>
 

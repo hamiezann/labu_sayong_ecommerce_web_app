@@ -3,7 +3,7 @@
       <div class="container">
           <div class="row">
               <div class="col-md-4 mb-4">
-                  <h5><i class="bi bi-palette me-2"></i> Labu Sayong</h5>
+                  <h5><i class="bi bi-palette me-2"></i> CRAFTEASE</h5>
                   <p class="small">Preserving the art of traditional Malaysian pottery and bringing authentic craftsmanship to your home.</p>
               </div>
               <div class="col-md-4 mb-4">
@@ -27,7 +27,7 @@
           </div>
           <hr style="border-color: rgba(255,255,255,0.1); margin: 2rem 0 1rem;">
           <div class="text-center">
-              <p class="mb-0">&copy; <?= date('Y') ?> Labu Sayong. All rights reserved.</p>
+              <p class="mb-0">&copy; <?= date('Y') ?> CRAFTEASE. All rights reserved.</p>
           </div>
       </div>
   </footer>

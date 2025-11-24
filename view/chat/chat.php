@@ -17,23 +17,8 @@ if ($session_id <= 0) {
     exit();
 }
 
-/* -----------------------------------
-   Detect staff role
------------------------------------- */
-// function is_staff($uid)
-// {
-//     global $conn;
-//     $res = mysqli_query($conn, "SELECT role FROM users WHERE id='$uid'");
-//     if ($res && $row = mysqli_fetch_assoc($res)) {
-//         return in_array(strtolower($row['role']), ['staff', 'manager', 'admin']);
-//     }
-//     return false;
-// }
-$isStaff = is_staff($user_id);
 
-/* -----------------------------------
-   Fetch chat session + product info
------------------------------------- */
+$isStaff = is_staff($user_id);
 $sessionQuery = mysqli_query($conn, "
     SELECT s.*, 
            p.name AS product_name, 
@@ -59,15 +44,11 @@ $productImage = !empty($session['product_image'])
     ? base_url($session['product_image'])
     : base_url('assets/img/no_image.png');
 
-/* -----------------------------------
-   Handle message send
------------------------------------- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
     $msg = mysqli_real_escape_string($conn, trim($_POST['message']));
     $customer_id = $session['customer_id'];
     $assigned_staff_id = $session['assigned_staff_id'];
 
-    // 🟡 Auto-assign staff if none yet
     if ($isStaff && empty($assigned_staff_id)) {
         mysqli_query($conn, "
             UPDATE chat_sessions 
@@ -77,16 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
         $assigned_staff_id = $user_id;
     }
 
-    // 🧠 Determine receiver
     if ($user_id == $customer_id) {
-        // Customer sending → receiver is assigned staff
         $receiver_id = $assigned_staff_id ?: $user_id; // temp self until staff replies
     } else {
-        // Staff sending → receiver is customer
         $receiver_id = $customer_id;
     }
 
-    // ✅ Insert message with receiver_id (to avoid foreign key errors)
     $stmt = mysqli_prepare($conn, "
         INSERT INTO chats (session_id, sender_id, receiver_id, message, is_read, is_read_by_staff)
         VALUES (?, ?, ?, ?, 0, 0)
@@ -100,9 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
     exit();
 }
 
-/* -----------------------------------
-   Fetch chat messages
------------------------------------- */
+
 $chatQuery = mysqli_query($conn, "
     SELECT c.*, u.FullName AS sender_name 
     FROM chats c
@@ -116,8 +91,7 @@ include '../customer/header.php';
 
 <div class="container py-5">
     <div class="card shadow-lg border-0 rounded-4">
-        <!-- 🟡 Header -->
-        <div class="card-header bg-warning text-dark d-flex align-items-center justify-content-between">
+        <div class="card-header text-dark d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, #edc493 0%, #c9b59c 100%);">
             <div class="d-flex align-items-center">
                 <img src="<?= $productImage ?>" class="rounded me-3" style="width:50px;height:50px;object-fit:cover;">
                 <div>
@@ -136,11 +110,10 @@ include '../customer/header.php';
             </div>
         </div>
 
-        <!-- 💬 Chat Body -->
-        <div class="card-body bg-light" style="height:420px; overflow-y:auto;" id="chatBox">
+        <div class="card-body bg-" style="height:420px; overflow-y:auto;" id="chatBox">
             <?php while ($chat = mysqli_fetch_assoc($chatQuery)): ?>
                 <div class="d-flex mb-3 <?= $chat['sender_id'] == $user_id ? 'justify-content-end' : 'justify-content-start' ?>">
-                    <div class="p-3 rounded-3 shadow-sm <?= $chat['sender_id'] == $user_id ? 'bg-success text-white' : 'bg-white' ?>" style="max-width:70%;">
+                    <div class="p-3 rounded-3 shadow-sm <?= $chat['sender_id'] == $user_id ? 'back-success-custom text-white' : 'back-warning-custom ' ?>" style="max-width:70%;">
                         <small class="d-block fw-semibold mb-1"><?= htmlspecialchars($chat['sender_name']) ?></small>
                         <div><?= nl2br(htmlspecialchars($chat['message'])) ?></div>
                         <div class="text-end">
@@ -151,10 +124,9 @@ include '../customer/header.php';
             <?php endwhile; ?>
         </div>
 
-        <!-- ✍️ Message Input -->
         <form method="POST" class="card-footer d-flex gap-2 border-0 p-3">
             <input type="text" name="message" class="form-control rounded-pill" placeholder="Type your message..." required>
-            <button type="submit" class="btn btn-success rounded-pill px-4">
+            <button type="submit" class="btn btn-message rounded-pill px-4">
                 <i class="bi bi-send-fill"></i>
             </button>
         </form>

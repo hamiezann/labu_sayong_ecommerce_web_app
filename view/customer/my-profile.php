@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
 
                     <div class="text-end mt-4 edit-mode d-none">
                         <button type="button" id="cancelEdit" class="btn btn-secondary me-2">Cancel</button>
-                        <button type="submit" name="update_user" class="btn btn-success px-4">Save Changes</button>
+                        <button type="submit" name="update_user" class="btn btn-message px-4">Save Changes</button>
                     </div>
                 </form>
             </div>

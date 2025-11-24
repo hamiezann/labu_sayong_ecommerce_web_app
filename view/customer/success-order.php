@@ -50,7 +50,7 @@ include '../customer/header.php';
             <p class="text-muted mb-4">Your order has been placed successfully. A confirmation has been recorded in your account.</p>
 
             <div class="card mx-auto border-0 shadow-sm" style="max-width: 700px;">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header back-info-custom text-white">
                     <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Order Details</h5>
                 </div>
                 <div class="card-body">
@@ -125,7 +125,7 @@ include '../customer/header.php';
                 <a href="../shop-listing.php" class="btn btn-outline-primary me-2">
                     <i class="bi bi-bag"></i> Continue Shopping
                 </a>
-                <a href="my-orders.php" class="btn btn-success">
+                <a href="my-orders.php" class="btn back-success-custom text-white">
                     <i class="bi bi-list-check"></i> View My Orders
                 </a>
             </div>

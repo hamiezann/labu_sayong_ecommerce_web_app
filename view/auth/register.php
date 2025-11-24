@@ -155,14 +155,15 @@ if (isset($_POST['register'])) {
                 </div>
             </div>
 
-            <div class="col-lg-7 col-md-6 d-none d-md-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); padding: 3rem; position: relative; overflow: hidden;">
+            <!-- <div class="col-lg-7 col-md-6 d-none d-md-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); padding: 3rem; position: relative; overflow: hidden;"> -->
+            <div class="col-lg-7 col-md-6 d-none d-md-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #edc493 0%, #c9b59c 100%); padding: 3rem; position: relative; overflow: hidden;">
 
                 <!-- 3D Illustration Placeholder -->
                 <div style="width: 100%; max-width: 600px; text-align: center; position: relative; z-index: 2;">
                     <!-- <div style="font-size: 15rem; line-height: 1; margin-bottom: 2rem; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));">
                         🔐
                     </div> -->
-                    <h2 style="color: white; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 20px rgba(0,0,0,0.2);">Labu Sayong</h2>
+                    <h2 style="color: white; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 20px rgba(0,0,0,0.2);">CRAFTEASE</h2>
                     <!-- <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem; line-height: 1.6;">Your data is protected with enterprise-grade encryption and security protocols.</p> -->
                 </div>
 

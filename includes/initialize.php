@@ -1,6 +1,6 @@
 <?php
 
-$title = "Labu Sayong WebApp";
+$title = "CRAFTEASE";
 $url = "http://localhost/labu-sayong-webapp/";
 
 
@@ -90,6 +90,7 @@ function getRoutePermission($url, $role)
             'chat-view.php',
             'report.php',
             'report-pdf.php',
+            'chat-assign.php',
             // 'staff/manage-product.php',
 
         ],

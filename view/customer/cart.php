@@ -1,31 +1,91 @@
 <?php
 ob_start();
 include '../customer/header.php';
+require_once '../../includes/config.php';
 
-// ✅ Handle remove item
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../auth/login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+// --- STEP 1: Fetch user's cart ---
+$cartQuery = $conn->prepare("
+    SELECT c.cart_id 
+    FROM carts c 
+    WHERE c.user_id = ? 
+    LIMIT 1
+");
+$cartQuery->bind_param("i", $user_id);
+$cartQuery->execute();
+$cartQuery->bind_result($cart_id);
+$hasCart = $cartQuery->fetch();
+$cartQuery->close();
+
+$cartItems = [];
+if ($hasCart) {
+    $itemsQuery = $conn->prepare("
+        SELECT ci.cart_item_id, ci.product_id, ci.variant_id, ci.quantity, ci.price, ci.color, ci.size, ci.pattern, p.name, p.image, p.stock
+        FROM cart_items ci
+        JOIN products p ON ci.product_id = p.product_id
+        WHERE ci.cart_id = ?
+    ");
+    $itemsQuery->bind_param("i", $cart_id);
+    $itemsQuery->execute();
+    $result = $itemsQuery->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $cartItems[$row['cart_item_id']] = $row;
+    }
+    $itemsQuery->close();
+}
+
+// --- STEP 2: Handle remove item ---
 if (isset($_GET['remove'])) {
-    $id = $_GET['remove'];
-    unset($_SESSION['cart'][$id]);
+    $removeId = intval($_GET['remove']);
+    $deleteItem = $conn->prepare("DELETE FROM cart_items WHERE cart_item_id = ? AND cart_id = ?");
+    $deleteItem->bind_param("ii", $removeId, $cart_id);
+    $deleteItem->execute();
+    $deleteItem->close();
+
     $_SESSION['success_message'] = "🗑️ Item removed from cart.";
     header("Location: cart.php");
     exit();
 }
 
-// ✅ Handle update quantities
+// --- STEP 3: Handle update cart ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
-    foreach ($_POST['quantity'] as $id => $qty) {
+    foreach ($_POST['quantity'] as $cartItemId => $qty) {
+        $qty = intval($qty);
+
+        if (!isset($cartItems[$cartItemId])) continue;
+
+        $productStock = $cartItems[$cartItemId]['stock'];
+
+        if ($qty > $productStock) {
+            $_SESSION['error_message'] = "⚠️ Requested quantity exceeds available stock ({$productStock}).";
+            header("Location: cart.php");
+            exit();
+        }
+
         if ($qty > 0) {
-            $_SESSION['cart'][$id]['quantity'] = intval($qty);
+            $updateStmt = $conn->prepare("UPDATE cart_items SET quantity = ? WHERE cart_item_id = ? AND cart_id = ?");
+            $updateStmt->bind_param("iii", $qty, $cartItemId, $cart_id);
+            $updateStmt->execute();
+            $updateStmt->close();
         } else {
-            unset($_SESSION['cart'][$id]);
+            // Remove item if quantity <= 0
+            $deleteStmt = $conn->prepare("DELETE FROM cart_items WHERE cart_item_id = ? AND cart_id = ?");
+            $deleteStmt->bind_param("ii", $cartItemId, $cart_id);
+            $deleteStmt->execute();
+            $deleteStmt->close();
         }
     }
+
     $_SESSION['success_message'] = "✅ Cart updated successfully!";
     header("Location: cart.php");
     exit();
 }
-
-$cart = $_SESSION['cart'] ?? [];
 ?>
 
 <div class="container py-5">
@@ -33,24 +93,28 @@ $cart = $_SESSION['cart'] ?? [];
         <i class="bi bi-cart4 me-2"></i>My Cart
     </h2>
 
-    <!-- ✅ Success / Empty Alerts -->
     <?php if (isset($_SESSION['success_message'])): ?>
         <div class="alert alert-success text-center">
             <?= $_SESSION['success_message'];
             unset($_SESSION['success_message']); ?>
         </div>
     <?php endif; ?>
+    <?php if (isset($_SESSION['error_message'])): ?>
+        <div class="alert alert-danger text-center">
+            <?= $_SESSION['error_message'];
+            unset($_SESSION['error_message']); ?>
+        </div>
+    <?php endif; ?>
 
-    <?php if (empty($cart)): ?>
+    <?php if (empty($cartItems)): ?>
         <div class="text-center py-5 border rounded bg-light">
             <i class="bi bi-bag-x display-1 text-muted"></i>
             <h4 class="mt-3 text-secondary">Your cart is empty</h4>
-            <a href="../shop-listing.php" class="btn btn-primary mt-3 px-4">
+            <a href="../shop-listing.php" class="btn back-info-custom mt-3 px-4" style="color: white">
                 <i class="bi bi-shop"></i> Continue Shopping
             </a>
         </div>
     <?php else: ?>
-
         <form method="POST" class="cart-form">
             <div class="table-responsive shadow-sm">
                 <table class="table align-middle text-center bg-white rounded-3">
@@ -67,10 +131,9 @@ $cart = $_SESSION['cart'] ?? [];
                     <tbody>
                         <?php
                         $grandTotal = 0;
-                        foreach ($cart as $id => $item):
+                        foreach ($cartItems as $id => $item):
                             $total = $item['price'] * $item['quantity'];
                             $grandTotal += $total;
-                            $options = $item['options'] ?? [];
                         ?>
                             <tr class="align-middle">
                                 <td class="text-start">
@@ -87,23 +150,19 @@ $cart = $_SESSION['cart'] ?? [];
                                 </td>
 
                                 <td>
-                                    <?php if (!empty($options)): ?>
-                                        <?php foreach ($options as $key => $value): ?>
-                                            <?php if (!empty($value)): ?>
-                                                <div class="text-muted small">
-                                                    <span class="fw-semibold"><?= ucfirst($key) ?>:</span>
-                                                    <?php if ($key === 'color'): ?>
-                                                        <span class="ms-1" style="display:inline-block;width:15px;height:15px;border-radius:3px;background:<?= htmlspecialchars($value) ?>;border:1px solid #ccc;"></span>
-                                                        <span><?= htmlspecialchars($value) ?></span>
-                                                    <?php else: ?>
-                                                        <?= htmlspecialchars($value) ?>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <small class="text-muted">—</small>
-                                    <?php endif; ?>
+                                    <?php foreach (['color', 'size', 'pattern'] as $opt): ?>
+                                        <?php if (!empty($item[$opt])): ?>
+                                            <div class="text-muted small">
+                                                <span class="fw-semibold"><?= ucfirst($opt) ?>:</span>
+                                                <?php if ($opt === 'color'): ?>
+                                                    <span class="ms-1" style="display:inline-block;width:15px;height:15px;border-radius:3px;background:<?= htmlspecialchars($item[$opt]) ?>;border:1px solid #ccc;"></span>
+                                                    <span><?= htmlspecialchars($item[$opt]) ?></span>
+                                                <?php else: ?>
+                                                    <?= htmlspecialchars($item[$opt]) ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
                                 </td>
 
                                 <td class="fw-semibold">RM <?= number_format($item['price'], 2) ?></td>
@@ -112,7 +171,7 @@ $cart = $_SESSION['cart'] ?? [];
                                     <input type="number" name="quantity[<?= $id ?>]"
                                         value="<?= $item['quantity'] ?>"
                                         class="form-control text-center mx-auto border-primary"
-                                        min="1" style="width: 70px;">
+                                        min="1" max="<?= $item['stock'] ?>" style="width: 70px;">
                                 </td>
 
                                 <td class="fw-bold text-success">
@@ -141,7 +200,7 @@ $cart = $_SESSION['cart'] ?? [];
                         <button type="submit" name="update_cart" class="btn btn-outline-primary me-2">
                             <i class="bi bi-arrow-repeat me-1"></i> Update Cart
                         </button>
-                        <a href="checkout.php" class="btn btn-success px-4">
+                        <a href="checkout.php" class="btn back-success-custom px-4" style="color: white;">
                             <i class="bi bi-credit-card me-1"></i> Checkout
                         </a>
                     </div>
@@ -152,6 +211,5 @@ $cart = $_SESSION['cart'] ?? [];
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <?php include '../customer/footer.php'; ?>
 <?php ob_end_flush(); ?>
