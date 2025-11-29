@@ -23,14 +23,6 @@ $result = $stmt->get_result();
 include '../customer/header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>My Orders</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
 <style>
     /* Custom table styling */
     .table-custom {
@@ -93,57 +85,63 @@ include '../customer/header.php';
     }
 </style>
 
-<body class="bg-light">
-    <div class="container py-5">
-        <h2 class="mb-4">My Orders</h2>
-
-        <?php if ($result->num_rows > 0): ?>
-            <div class="table-responsive">
-                <!-- <table class="table table-bordered align-middle"> -->
-                <table class="table table-bordered align-middle table-custom">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#Order ID</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Shipping</th>
-                            <th>Total (RM)</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = $result->fetch_assoc()): ?>
-                            <tr>
-                                <td><?= $row['order_id'] ?></td>
-                                <td><?= date('d M Y, h:i A', strtotime($row['order_date'])) ?></td>
-                                <td>
-                                    <?php
-                                    $statusClass = [
-                                        'Pending' => 'back-warning-custom',
-                                        'Processing' => 'back-info-custom',
-                                        'Completed' => 'back-success-custom',
-                                        'Cancelled' => 'back-danger-custom'
-                                    ][$row['status']] ?? 'secondary';
-                                    ?>
-                                    <span class="badge <?= $statusClass ?>"><?= $row['status'] ?></span>
-                                </td>
-                                <td><?= htmlspecialchars($row['shipping_fee'] ?? '-') ?></td>
-                                <td><?= number_format($row['total_price'], 2) ?></td>
-                                <td>
-                                    <a href="order-details.php?order_id=<?= $row['order_id'] ?>" class="btn btn-sm btn-outline-primary">View Details</a>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php else: ?>
-            <div class="alert alert-info">You have not placed any orders yet.</div>
-        <?php endif; ?>
+<!-- <body class="bg-light"> -->
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded-3 shadow-sm"
+        style="background:#fff;">
+        <h3 class="fw-bold mb-0 d-flex align-items-center" style="color:#222;">
+            <i class="bi bi-chat-dots-fill me-2 fs-4"></i>
+            My Orders
+        </h3>
     </div>
-</body>
 
-</html>
+
+    <?php if ($result->num_rows > 0): ?>
+        <div class="table-responsive">
+            <!-- <table class="table table-bordered align-middle"> -->
+            <table class="table table-bordered align-middle table-custom">
+                <thead class="table-light">
+                    <tr>
+                        <th>#Order ID</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Shipping</th>
+                        <th>Total (RM)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?= $row['order_id'] ?></td>
+                            <td><?= date('d M Y, h:i A', strtotime($row['order_date'])) ?></td>
+                            <td>
+                                <?php
+                                $statusClass = [
+                                    'Pending' => 'back-warning-custom',
+                                    'Processing' => 'back-info-custom',
+                                    'Completed' => 'back-success-custom',
+                                    'Cancelled' => 'back-danger-custom'
+                                ][$row['status']] ?? 'secondary';
+                                ?>
+                                <span class="badge <?= $statusClass ?>"><?= $row['status'] ?></span>
+                            </td>
+                            <td><?= htmlspecialchars($row['shipping_fee'] ?? '-') ?></td>
+                            <td><?= number_format($row['total_price'], 2) ?></td>
+                            <td>
+                                <a href="order-details.php?order_id=<?= $row['order_id'] ?>" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php else: ?>
+        <div class="alert alert-info">You have not placed any orders yet.</div>
+    <?php endif; ?>
+</div>
+<!-- </body> -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 

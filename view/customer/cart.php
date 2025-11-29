@@ -89,9 +89,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
 ?>
 
 <div class="container py-5">
-    <h2 class="fw-bold mb-4 text-primary">
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded-3 shadow-sm"
+        style="background:#fff;">
+        <h3 class="fw-bold mb-0 d-flex align-items-center" style="color:#222;">
+            <i class="bi bi-receipt-cutoff me-2 fs-4"></i>
+            My Cart
+        </h3>
+    </div>
+    <!-- <h2 class="fw-bold mb-4 text-primary">
         <i class="bi bi-cart4 me-2"></i>My Cart
-    </h2>
+    </h2> -->
 
     <?php if (isset($_SESSION['success_message'])): ?>
         <div class="alert alert-success text-center">
@@ -110,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
         <div class="text-center py-5 border rounded bg-light">
             <i class="bi bi-bag-x display-1 text-muted"></i>
             <h4 class="mt-3 text-secondary">Your cart is empty</h4>
-            <a href="../shop-listing.php" class="btn back-info-custom mt-3 px-4" style="color: white">
+            <a href="../shop-listing.php" class="btn btn-send mt-3 px-4" style="color: white">
                 <i class="bi bi-shop"></i> Continue Shopping
             </a>
         </div>

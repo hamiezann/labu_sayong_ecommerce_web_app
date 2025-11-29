@@ -33,8 +33,13 @@ include '../customer/header.php';
 <main class="app-main">
     <div class="app-content p-2 p-lg-4" style="min-height: 80vh">
         <div class="container-fluid">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-                <h3 class="fw-bold mb-0"><i class="bi bi-chat-dots-fill me-2 text-primary"></i><?= $pageName ?></h3>
+
+            <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded-3 shadow-sm"
+                style="background:#fff;">
+                <h3 class="fw-bold mb-0 d-flex align-items-center" style="color:#222;">
+                    <i class="bi bi-chat-dots-fill me-2 fs-4"></i>
+                    My Chats
+                </h3>
             </div>
 
             <div class="card shadow-sm border-0 rounded-4">

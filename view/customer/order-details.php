@@ -48,27 +48,49 @@ $items = $itemQuery->get_result();
 $itemQuery->close();
 
 include '../customer/header.php';
+
+$order_id = $_GET['order_id'];
+
+// Fetch order first
+$order = mysqli_fetch_assoc(mysqli_query($conn, "
+    SELECT * FROM orders WHERE order_id = '$order_id'
+"));
+
 ?>
 
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold text-primary"><i class="bi bi-receipt-cutoff me-2"></i>Order Details</h3>
-        <a href="my-orders.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back to Orders</a>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded-3 shadow-sm"
+        style="background:#fff;">
+        <h3 class="fw-bold mb-0 d-flex align-items-center" style="color:#222;">
+            <i class="bi bi-receipt-cutoff me-2 fs-4"></i>
+            Order Details
+        </h3>
+        <a href="my-orders.php" class="btn btn-send px-3 py-2">
+            <i class="bi bi-arrow-left me-1"></i> Back to Orders
+        </a>
     </div>
 
     <!-- Order Summary -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header back-warning-custom text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Order Summary</h5>
-            <span class="badge bg-light text-dark px-3 py-2"><?= htmlspecialchars($order['status']) ?></span>
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header back-warning-custom text-black d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-semibold">
+                <i class="bi bi-info-circle me-2"></i> Order Summary
+            </h5>
+            <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                <?= htmlspecialchars($order['status']) ?>
+            </span>
         </div>
+
         <div class="card-body">
-            <div class="row gy-3">
+            <div class="row g-4">
                 <div class="col-md-6">
                     <p><strong>Order ID:</strong> #<?= $order['order_id'] ?></p>
                     <p><strong>Order Date:</strong> <?= date("d M Y, h:i A", strtotime($order['order_date'])) ?></p>
                     <p><strong>Payment Method:</strong> <?= htmlspecialchars($order['payment_method']) ?></p>
                 </div>
+
                 <div class="col-md-6">
                     <p><strong>Shipping Address:</strong><br><?= nl2br(htmlspecialchars($order['shipping_address'])) ?></p>
                     <p><strong>Notes:</strong><br><?= nl2br(htmlspecialchars($order['notes'])) ?: '-' ?></p>
@@ -77,15 +99,70 @@ include '../customer/header.php';
         </div>
     </div>
 
-    <!-- Order Items -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header back-info-custom text-white">
-            <h5 class="mb-0"><i class="bi bi-bag-check me-2"></i>Ordered Items</h5>
+    <!-- Update Form -->
+    <div class="card border-0 shadow-sm mb-4">
+
+        <!-- Header Toggle -->
+        <button
+            type="button"
+            class="card-header back-warning-custom border-0 w-100 d-flex justify-content-between align-items-center p-3 collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#updateOrderCollapse"
+            aria-expanded="false"
+            style="cursor: pointer;">
+            <span class="fw-semibold">
+                <i class="bi bi-pencil-square me-2"></i> Update Order Information
+            </span>
+            <i class="bi bi-chevron-down fs-5 transition-arrow"></i>
+        </button>
+
+        <!-- Collapsible Body -->
+        <div id="updateOrderCollapse" class="collapse">
+            <div class="card-body">
+
+                <form action="../../function/update-order.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="order_id" value="<?= $order_id ?>">
+
+                    <!-- Address -->
+                    <div class="mb-3">
+                        <label class="fw-bold mb-1">Shipping Address</label>
+                        <textarea name="shipping_address" class="form-control" rows="3" required><?= htmlspecialchars($order['shipping_address']) ?></textarea>
+                    </div>
+
+                    <!-- PDF Upload -->
+                    <div class="mb-3">
+                        <label class="fw-bold mb-1">Upload Proof of Payment (PDF Only)</label>
+                        <input type="file" name="proof_of_payment" class="form-control" accept="application/pdf">
+
+                        <?php if (!empty($order['proof_of_payment'])): ?>
+                            <small class="text-success d-block mt-2">
+                                Uploaded:
+                                <a href="<?= base_url($order['proof_of_payment']) ?>" target="_blank">View PDF</a>
+                            </small>
+                        <?php endif; ?>
+                    </div>
+
+                    <button class="btn btn-send px-4" type="submit">Update Order</button>
+                </form>
+
+            </div>
         </div>
+    </div>
+
+
+
+    <!-- Order Items -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header text-black back-warning-custom">
+            <h5 class="mb-0 fw-semibold">
+                <i class="bi bi-bag-check me-2"></i> Ordered Items
+            </h5>
+        </div>
+
         <div class="card-body">
             <?php if ($items->num_rows > 0): ?>
                 <div class="table-responsive">
-                    <table class="table align-middle">
+                    <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>Product</th>
@@ -103,8 +180,10 @@ include '../customer/header.php';
                                 $subtotal += $total_item_price;
                             ?>
                                 <tr>
-                                    <td width="120">
-                                        <img src="<?= base_url($item['image']) ?>" class="img-fluid rounded shadow-sm" style="max-height: 80px; object-fit: cover;">
+                                    <td style="width:120px">
+                                        <img src="<?= base_url($item['image']) ?>"
+                                            class="img-fluid rounded"
+                                            style="max-height: 80px; object-fit: cover;">
                                     </td>
                                     <td>
                                         <strong><?= htmlspecialchars($item['name']) ?></strong><br>
@@ -129,28 +208,34 @@ include '../customer/header.php';
     </div>
 
     <!-- Payment Summary -->
-    <div class="card shadow-sm">
-        <div class="card-header back-success-custom text-white">
-            <h5 class="mb-0"><i class="bi bi-cash-stack me-2"></i>Payment Summary</h5>
+    <div class="card shadow-sm border-0">
+        <div class="card-header text-black back-warning-custom">
+            <h5 class="mb-0 fw-semibold">
+                <i class="bi bi-cash-stack me-2"></i> Payment Summary
+            </h5>
         </div>
+
         <div class="card-body">
             <div class="row justify-content-end">
                 <div class="col-md-6">
                     <table class="table table-borderless">
                         <tr>
                             <td>Subtotal</td>
-                            <td class="text-end">RM <?= number_format($order['subtotal'] ?? $subtotal, 2) ?></td>
+                            <td class="text-end">RM <?= number_format($subtotal, 2) ?></td>
                         </tr>
+
                         <?php if (strpos($order['notes'], 'Discount applied') !== false): ?>
                             <tr class="text-success">
                                 <td>Bulk Discount (10%)</td>
-                                <td class="text-end">- RM <?= number_format(($order['subtotal'] * 0.10), 2) ?></td>
+                                <td class="text-end">- RM <?= number_format(($subtotal * 0.10), 2) ?></td>
                             </tr>
                         <?php endif; ?>
+
                         <tr>
                             <td>Shipping Fee</td>
                             <td class="text-end">RM <?= number_format($order['shipping_fee'], 2) ?></td>
                         </tr>
+
                         <tr class="border-top fw-bold">
                             <td>Total Paid</td>
                             <td class="text-end text-success fs-5">RM <?= number_format($order['total_price'], 2) ?></td>
@@ -160,6 +245,8 @@ include '../customer/header.php';
             </div>
         </div>
     </div>
+
 </div>
+
 
 <?php include '../customer/footer.php'; ?>

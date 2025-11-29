@@ -70,7 +70,7 @@ $imagePath = !empty($product['image'])
             <div class="col-md-6 bg-light p-4">
                 <!-- BACK BUTTON -->
                 <a href="<?= base_url('view/shop-listing.php') ?>"
-                    class="btn btn-outline-secondary px-4 mb-2"
+                    class="btn btn-add-cart px-4 mb-4"
                     style="top: 20px; left: 20px; z-index: 10;">
                     <i class="bi bi-arrow-left"></i> Product List
                 </a>
@@ -85,7 +85,7 @@ $imagePath = !empty($product['image'])
             </div>
 
             <div class="col-md-6 p-5">
-                <h2 class="fw-bold mb-3 text-primary"><?= htmlspecialchars($product['name']) ?></h2>
+                <h2 class="fw-bold mb-3 "><?= htmlspecialchars($product['name']) ?></h2>
                 <p class="text-muted mb-4"><?= htmlspecialchars($product['description']) ?></p>
 
                 <h4 class="text-success fw-semibold mb-3">RM <?= number_format($product['price'], 2) ?></h4>

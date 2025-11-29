@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
 
             <!-- Profile Details -->
             <div class="col-md-8">
-                <h3 class="fw-semibold mb-3 text-primary">My Profile</h3>
+                <h3 class="fw-semibold mb-3 ">My Profile</h3>
                 <hr class="mb-4">
 
                 <form id="profileForm" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
 
         <!-- Change Password Section -->
         <div class="mt-4" id="passSectionVisibility">
-            <h4 class="fw-semibold text-primary mb-3">
+            <h4 class="fw-semibold  mb-3">
                 <i class="bi bi-lock-fill me-2"></i>Change Password
             </h4>
 
@@ -192,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
                 </div>
 
                 <div class="col-12 text-end mt-3">
-                    <button type="submit" class="btn btn-primary px-4">
+                    <button type="submit" class="btn btn-send px-4">
                         <i class="bi bi-save me-1"></i> Update Password
                     </button>
                 </div>

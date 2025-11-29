@@ -22,76 +22,78 @@ $subPage = 'view-orders';
 $pageName = 'Order Management';
 ?>
 
-<main class="app-main">
-    <div class="app-content p-4">
-        <div class="container-fluid">
-            <h1 class="mb-4 d-flex align-items-center">
-                <i class="bi bi-cart-check me-2"></i><?= $pageName ?>
-            </h1>
+<!-- <main class="app-main"> -->
+<!-- <div class="app-content p-4"> -->
+<div class="container p-4">
+    <div class="container-fluid">
+        <h1 class="mb-4 d-flex align-items-center">
+            <i class="bi bi-cart-check me-2"></i><?= $pageName ?>
+        </h1>
 
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>All Orders</h5>
-                </div>
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>All Orders</h5>
+            </div>
 
-                <div class="card-body">
-                    <?php if ($result->num_rows > 0): ?>
-                        <div class="table-responsive">
-                            <table id="orderTable" class="table table-hover align-middle">
-                                <thead class="table-light">
+
+            <div class="card-body">
+                <?php if ($result->num_rows > 0): ?>
+                    <div class="table-responsive">
+                        <table id="orderTable" class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Customer</th>
+                                    <th>Total (RM)</th>
+                                    <th>Status</th>
+                                    <th>Staff</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($row = $result->fetch_assoc()): ?>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Customer</th>
-                                        <th>Total (RM)</th>
-                                        <th>Status</th>
-                                        <th>Staff</th>
-                                        <th>Date</th>
-                                        <th>Action</th>
+                                        <td><?= $row['order_id'] ?></td>
+                                        <td><?= htmlspecialchars($row['FullName']) ?></td>
+                                        <td><?= number_format($row['total_price'], 2) ?></td>
+                                        <td>
+                                            <form method="POST" action="update-order-status.php" class="d-flex align-items-center">
+                                                <input type="hidden" name="order_id" value="<?= $row['order_id'] ?>">
+                                                <select name="status" class="form-select form-select-sm me-2" onchange="this.form.submit()">
+                                                    <?php
+                                                    $statuses = ['Pending', 'Processing', 'Completed', 'Cancelled'];
+                                                    foreach ($statuses as $status) {
+                                                        $selected = ($status == $row['status']) ? 'selected' : '';
+                                                        echo "<option value='$status' $selected>$status</option>";
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </form>
+                                        </td>
+                                        <td><?= htmlspecialchars($row['staff_name'] ?? '-') ?></td>
+                                        <td><?= date('d M Y', strtotime($row['order_date'])) ?></td>
+                                        <td>
+                                            <button class="btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#orderDetailModal"
+                                                data-orderid="<?= $row['order_id'] ?>">
+                                                <i class="bi bi-eye"></i> View
+                                            </button>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <?php while ($row = $result->fetch_assoc()): ?>
-                                        <tr>
-                                            <td><?= $row['order_id'] ?></td>
-                                            <td><?= htmlspecialchars($row['FullName']) ?></td>
-                                            <td><?= number_format($row['total_price'], 2) ?></td>
-                                            <td>
-                                                <form method="POST" action="update-order-status.php" class="d-flex align-items-center">
-                                                    <input type="hidden" name="order_id" value="<?= $row['order_id'] ?>">
-                                                    <select name="status" class="form-select form-select-sm me-2" onchange="this.form.submit()">
-                                                        <?php
-                                                        $statuses = ['Pending', 'Processing', 'Completed', 'Cancelled'];
-                                                        foreach ($statuses as $status) {
-                                                            $selected = ($status == $row['status']) ? 'selected' : '';
-                                                            echo "<option value='$status' $selected>$status</option>";
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </form>
-                                            </td>
-                                            <td><?= htmlspecialchars($row['staff_name'] ?? '-') ?></td>
-                                            <td><?= date('d M Y', strtotime($row['order_date'])) ?></td>
-                                            <td>
-                                                <button class="btn btn-outline-primary btn-sm"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#orderDetailModal"
-                                                    data-orderid="<?= $row['order_id'] ?>">
-                                                    <i class="bi bi-eye"></i> View
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    <?php endwhile; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php else: ?>
-                        <div class="alert alert-info text-center">No orders available.</div>
-                    <?php endif; ?>
-                </div>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <div class="alert alert-info text-center">No orders available.</div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
-</main>
+</div>
+<!-- </main> -->
 
 <!-- Order Detail Modal -->
 <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailLabel" aria-hidden="true">
