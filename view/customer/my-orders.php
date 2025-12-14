@@ -129,7 +129,7 @@ include '../customer/header.php';
                             <td><?= htmlspecialchars($row['shipping_fee'] ?? '-') ?></td>
                             <td><?= number_format($row['total_price'], 2) ?></td>
                             <td>
-                                <a href="order-details.php?order_id=<?= $row['order_id'] ?>" class="btn btn-sm btn-outline-primary">View Details</a>
+                                <a href="order-details.php?order_id=<?= $row['order_id'] ?>" class="btn btn-view">View Details</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>

@@ -124,7 +124,7 @@ $productList = mysqli_query($conn, $query);
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-search w-100 mb-3">
+                    <button type="submit" class="btn btn-view w-100 mb-3">
                         Apply Filter
                     </button>
 
@@ -183,7 +183,7 @@ $productList = mysqli_query($conn, $query);
                                         <i class="bi bi-eye me-2"></i> View Details
                                     </a> -->
                                     <div class="d-flex align-items-center gap-3">
-                                        <a href="<?= base_url('view/customer/product-detail.php?id=' . $product['product_id']) ?>" class="btn btn-view flex-grow-1"> <i class="bi bi-eye me-2"></i>View Details</a>
+                                        <a href="<?= base_url('view/customer/product-detail.php?id=' . $product['product_id']) ?>" class="btn btn-view"> <i class="bi bi-eye me-2"></i>View Details</a>
                                         <button class="btn btn-icon-fav wishlist-btn"
                                             data-product-id="<?= $product['product_id'] ?>">
                                             <i class="bi <?= $product['in_wishlist'] ? 'bi-heart-fill text-danger' : 'bi-heart' ?> fs-5"></i>

@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
                 <table class="table align-middle text-center bg-white rounded-3">
                     <thead class="table-dark">
                         <tr>
-                            <th>Product</th>
+                            <th class="text-start">Product</th>
                             <th width="20%">Variant Options</th>
                             <th>Price (RM)</th>
                             <th width="12%">Quantity</th>
@@ -135,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
                             <th></th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <?php
                         $grandTotal = 0;
@@ -142,27 +143,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
                             $total = $item['price'] * $item['quantity'];
                             $grandTotal += $total;
                         ?>
-                            <tr class="align-middle">
+                            <tr>
+                                <!-- PRODUCT -->
                                 <td class="text-start">
-                                    <div class="d-flex align-items-center">
+                                    <div class="d-flex align-items-center gap-3">
                                         <img src="<?= base_url($item['image']) ?>"
                                             alt="<?= htmlspecialchars($item['name']) ?>"
-                                            class="rounded-3 me-3 shadow-sm"
-                                            style="width: 80px; height: 80px; object-fit: cover;">
+                                            class="rounded-3 shadow-sm"
+                                            style="width:80px;height:80px;object-fit:cover;">
+
                                         <div>
                                             <h6 class="fw-semibold mb-1"><?= htmlspecialchars($item['name']) ?></h6>
-                                            <small class="text-muted">Product ID: <?= htmlspecialchars($item['product_id']) ?></small>
+                                            <small class="text-muted">ID: <?= htmlspecialchars($item['product_id']) ?></small>
                                         </div>
                                     </div>
                                 </td>
 
+                                <!-- VARIANTS -->
                                 <td>
                                     <?php foreach (['color', 'size', 'pattern'] as $opt): ?>
                                         <?php if (!empty($item[$opt])): ?>
-                                            <div class="text-muted small">
-                                                <span class="fw-semibold"><?= ucfirst($opt) ?>:</span>
+                                            <div class="small text-muted d-flex justify-content-center gap-1">
+                                                <strong><?= ucfirst($opt) ?>:</strong>
                                                 <?php if ($opt === 'color'): ?>
-                                                    <span class="ms-1" style="display:inline-block;width:15px;height:15px;border-radius:3px;background:<?= htmlspecialchars($item[$opt]) ?>;border:1px solid #ccc;"></span>
+                                                    <span class="d-inline-block rounded border"
+                                                        style="width:14px;height:14px;background:<?= htmlspecialchars($item[$opt]) ?>"></span>
                                                     <span><?= htmlspecialchars($item[$opt]) ?></span>
                                                 <?php else: ?>
                                                     <?= htmlspecialchars($item[$opt]) ?>
@@ -172,19 +177,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
                                     <?php endforeach; ?>
                                 </td>
 
+                                <!-- PRICE -->
                                 <td class="fw-semibold">RM <?= number_format($item['price'], 2) ?></td>
 
+                                <!-- QUANTITY -->
                                 <td>
-                                    <input type="number" name="quantity[<?= $id ?>]"
+                                    <input type="number"
+                                        name="quantity[<?= $id ?>]"
                                         value="<?= $item['quantity'] ?>"
-                                        class="form-control text-center mx-auto border-primary"
-                                        min="1" max="<?= $item['stock'] ?>" style="width: 70px;">
+                                        min="1" max="<?= $item['stock'] ?>"
+                                        class="form-control form-control-sm text-center mx-auto"
+                                        style="width:70px;">
                                 </td>
 
-                                <td class="fw-bold text-success">
-                                    RM <?= number_format($total, 2) ?>
+                                <!-- TOTAL + VIEW -->
+                                <td>
+                                    <div class="d-flex flex-column align-items-center gap-1">
+                                        <span class="fw-bold text-success">
+                                            RM <?= number_format($total, 2) ?>
+                                        </span>
+
+                                        <a href="<?= base_url('view/customer/product-detail.php?id=' . $item['product_id']) ?>"
+                                            class="btn btn-sm btn-link p-0 text-decoration-none">
+                                            See product →
+                                        </a>
+                                    </div>
                                 </td>
 
+                                <!-- REMOVE -->
                                 <td>
                                     <a href="cart.php?remove=<?= urlencode($id) ?>"
                                         class="btn btn-sm btn-outline-danger"
@@ -196,6 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+
             </div>
 
             <div class="card mt-4 shadow-sm">
@@ -204,10 +225,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
                         <span class="text-success fw-bold">RM <?= number_format($grandTotal, 2) ?></span>
                     </h4>
                     <div>
-                        <button type="submit" name="update_cart" class="btn btn-outline-primary me-2">
+                        <button type="submit" name="update_cart" class="btn btn-outline-primary me-2 " style="max-width: 200px;">
                             <i class="bi bi-arrow-repeat me-1"></i> Update Cart
                         </button>
-                        <a href="checkout.php" class="btn back-success-custom px-4" style="color: white;">
+                        <a href="checkout.php" class="btn back-success-custom px-4" style="max-width: 200px; color: white">
                             <i class="bi bi-credit-card me-1"></i> Checkout
                         </a>
                     </div>

@@ -2,7 +2,6 @@
 require_once '../../includes/config.php';
 include '../customer/header.php';
 
-// 🔹 Validate product ID
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     echo "<div class='container py-5 text-center'><h4>❌ Product not found.</h4></div>";
     include '../customer/footer.php';
@@ -57,7 +56,7 @@ while ($row = mysqli_fetch_assoc($variantQuery)) {
     }
 }
 
-// Now define image path BEFORE generating JS map
+
 $imagePath = !empty($product['image'])
     ? base_url($product['image'])
     : base_url('assets/img/no_image.png');
@@ -70,7 +69,7 @@ $imagePath = !empty($product['image'])
             <div class="col-md-6 bg-light p-4">
                 <!-- BACK BUTTON -->
                 <a href="<?= base_url('view/shop-listing.php') ?>"
-                    class="btn btn-add-cart px-4 mb-4"
+                    class="btn btn-view px-4 mb-4"
                     style="top: 20px; left: 20px; z-index: 10;">
                     <i class="bi bi-arrow-left"></i> Product List
                 </a>
@@ -102,7 +101,8 @@ $imagePath = !empty($product['image'])
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <?php if ($product['stock'] > 0): ?>
                         <!-- <form action="../../function/add-to-cart.php" method="POST" class="d-flex flex-column gap-3"> -->
-                        <form action="../../function/add-to-cart-db.php" method="POST" class="d-flex flex-column gap-3">
+                        <!-- <form action="../../function/add-to-cart-db.php" method="POST" class="d-flex flex-column gap-3"> -->
+                        <form id="addToCartForm" class="d-flex flex-column gap-3">
 
                             <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
                             <input type="hidden" name="name" value="<?= htmlspecialchars($product['name']) ?>">
@@ -153,7 +153,7 @@ $imagePath = !empty($product['image'])
                                 </div>
 
                                 <!-- <button type="submit" class="btn btn-success px-2"> -->
-                                <button type="submit" class="btn btn-add-cart">
+                                <button type="submit" class="btn btn-view px-2">
                                     <i class="bi bi-cart-plus"></i> Add to Cart
                                 </button>
                                 <!-- <a href="<?= base_url('view/chat/chat-now.php?product_id=' . $product['product_id']) ?>"
@@ -187,29 +187,36 @@ $imagePath = !empty($product['image'])
                 <?php foreach ($alsoBuy as $item): ?>
                     <div class="col-6 col-md-4 col-lg-3">
                         <a href="<?= base_url('view/customer/product-detail.php?id=' . $item['product_id']) ?>" class="text-decoration-none d-block h-100">
-                            <div class="card shadow-sm border h-100 transition-shadow-hover">
-                                <div class="card-img-container" style="height: 180px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
+                            <div class="card shadow-sm border h-100">
+                                <div style="height:180px;display:flex;align-items:center;justify-content:center;background:#f8f9fa;">
                                     <img src="<?= base_url($item['image']) ?>"
-                                        class="card-img-top"
                                         alt="<?= htmlspecialchars($item['name']) ?>"
-                                        style="max-height: 100%; width: auto; max-width: 100%; object-fit: contain; padding: 10px;">
+                                        style="max-height:100%;max-width:100%;object-fit:contain;padding:10px;">
                                 </div>
 
                                 <div class="card-body d-flex flex-column">
-                                    <h6 class="card-title text-dark fw-semibold mb-2 line-clamp-2"><?= htmlspecialchars($item['name']) ?></h6>
-                                    <p class="text-success fw-bolder mt-auto mb-0">RM <?= number_format($item['price'], 2) ?></p>
+                                    <h6 class="fw-semibold line-clamp-2"><?= htmlspecialchars($item['name']) ?></h6>
+                                    <p class="text-success fw-bold mt-auto mb-0">
+                                        RM <?= number_format($item['price'], 2) ?>
+                                    </p>
+                                    <!-- <small class="text-muted">
+                                        Bought together <?= $item['total_qty'] ?> times
+                                    </small> -->
                                 </div>
                             </div>
                         </a>
                     </div>
                 <?php endforeach; ?>
             </div>
-
-            <div class="text-center mt-5">
-                <a href="<?= base_url('view/shop-listing.php') ?>" class=" btn btn-send btn-lg">See Other Products</a>
-            </div>
+        </div>
+    <?php else: ?>
+        <div class="container my-5 text-center">
+            <p class="text-muted fst-italic">
+                No one has bought this product yet.
+            </p>
         </div>
     <?php endif; ?>
+
 
 </div>
 
@@ -279,6 +286,55 @@ $imagePath = !empty($product['image'])
 
         updateImage(); // first load
     });
+</script>
+<script>
+    document.getElementById("addToCartForm")?.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const form = this;
+        const formData = new FormData(form);
+
+        fetch("../../function/add-to-cart-db.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message);
+
+                    // Refresh page so header cart count updates
+                    setTimeout(() => {
+                        location.reload();
+                    }, 800);
+                } else {
+                    alert("Failed to add to cart");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Something went wrong");
+            });
+    });
+
+    function showToast(message) {
+        const toast = document.createElement("div");
+        toast.innerText = message;
+
+        toast.style.position = "fixed";
+        toast.style.bottom = "30px";
+        toast.style.right = "30px";
+        toast.style.background = "#28a745";
+        toast.style.color = "#fff";
+        toast.style.padding = "12px 18px";
+        toast.style.borderRadius = "8px";
+        toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
+        toast.style.zIndex = "9999";
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.remove(), 2500);
+    }
 </script>
 
 <?php include '../customer/footer.php'; ?>

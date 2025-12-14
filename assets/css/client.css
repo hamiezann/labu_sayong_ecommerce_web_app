@@ -217,13 +217,13 @@ body {
 }
 
 .btn-view {
-  /* background: linear-gradient(135deg, #e6e2dd 0%, #c9b59c 100%); */
   background: #af8f6f;
   color: white;
   border: none;
   border-radius: 10px;
   padding: 0.6rem 1.5rem;
-  width: 100%;
+  /* width: 100%; */
+  min-width: 150px;
   font-weight: 500;
   transition: all 0.3s;
 }

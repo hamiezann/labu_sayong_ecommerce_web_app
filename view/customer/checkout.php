@@ -9,6 +9,14 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+$userAddress = '';
+
+$userStmt = $conn->prepare("SELECT address FROM users WHERE id = ?");
+$userStmt->bind_param("i", $user_id);
+$userStmt->execute();
+$userStmt->bind_result($userAddress);
+$userStmt->fetch();
+$userStmt->close();
 
 $cartQuery = $conn->prepare("SELECT cart_id FROM carts WHERE user_id = ? LIMIT 1");
 $cartQuery->bind_param("i", $user_id);
@@ -177,9 +185,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
                 </div>
                 <div class="card-body">
                     <form method="POST" enctype="multipart/form-data">
+                        <!-- <div class="mb-3">
+                            <label class="form-label fw-semibold">Shipping Address</label>
+                            add a checkbox here when clicked will fetch the address from users table and fill the text area adress
+                            <textarea name="address" class="form-control" rows="3" placeholder="Enter your full address..." required></textarea>
+                        </div> -->
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Shipping Address</label>
-                            <textarea name="address" class="form-control" rows="3" placeholder="Enter your full address..." required></textarea>
+
+                            <div class="form-check mb-2">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="useSavedAddress"
+                                    data-address="<?= htmlspecialchars($userAddress ?? '', ENT_QUOTES) ?>">
+                                <label class="form-check-label small text-muted" for="useSavedAddress">
+                                    Use my saved address
+                                </label>
+                            </div>
+
+
+                            <!-- Textarea -->
+                            <textarea
+                                name="address"
+                                id="addressTextarea"
+                                class="form-control"
+                                rows="3"
+                                placeholder="Enter your full address..."
+                                required></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -209,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Proof of Payment</label>
-                            <input type="file" name="proof_of_payment" accept=".pdf" class="form-control">
+                            <input type="file" name="proof_of_payment" accept=".pdf" class="form-control" required>
                         </div>
 
                         <button type="submit" name="place_order" class="btn btn-success w-100 py-2">
@@ -300,6 +333,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
         opacity: 0.9;
     }
 </style>
+<script>
+    document.getElementById('useSavedAddress').addEventListener('change', function() {
+        const textarea = document.getElementById('addressTextarea');
+        const savedAddress = this.dataset.address;
+
+        if (this.checked) {
+            if (savedAddress.trim() !== '') {
+                textarea.value = savedAddress;
+                textarea.readOnly = true;
+            } else {
+                alert('No saved address found.');
+                this.checked = false;
+            }
+        } else {
+            textarea.value = '';
+            textarea.readOnly = false;
+        }
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <?php include '../customer/footer.php'; ?>

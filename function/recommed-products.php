@@ -17,36 +17,27 @@ if ($user_id) {
 
 $alsoBuy = [];
 
-$alsoBuyQuery = mysqli_query($conn, "
-    SELECT DISTINCT oi2.product_id, p.name, p.price, p.image
-    FROM order_items oi
-    INNER JOIN order_items oi2 ON oi.order_id = oi2.order_id
-    INNER JOIN products p ON p.product_id = oi2.product_id
-    INNER JOIN orders o ON oi.order_id = o.order_id
-    WHERE oi.product_id = '$product_id'
-      AND oi2.product_id != '$product_id'
-      AND o.user_id != '$user_id'
-      " . ($user_id ? " AND oi2.product_id NOT IN (" . implode(",", $userPurchased ?: [0]) . ")" : "") . "
-    LIMIT 4
-");
+$sql = "
+SELECT 
+    oi2.product_id,
+    p.name,
+    p.price,
+    p.image,
+    SUM(oi2.quantity) AS total_qty
+FROM order_items oi
+INNER JOIN order_items oi2 
+    ON oi.order_id = oi2.order_id
+INNER JOIN products p 
+    ON p.product_id = oi2.product_id
+WHERE oi.product_id = '$product_id'
+  AND oi2.product_id != '$product_id'
+GROUP BY oi2.product_id, p.name, p.price, p.image
+ORDER BY total_qty DESC
+LIMIT 4
+";
 
-while ($r = mysqli_fetch_assoc($alsoBuyQuery)) {
+$q = mysqli_query($conn, $sql);
+
+while ($r = mysqli_fetch_assoc($q)) {
     $alsoBuy[] = $r;
-}
-
-if (empty($alsoBuy)) {
-    $exclude = array_merge([$product_id], $userPurchased);
-    $excludeList = implode(",", $exclude ?: [0]);
-
-    $fallbackQuery = mysqli_query($conn, "
-        SELECT product_id, name, price, image 
-        FROM products
-        WHERE product_id NOT IN ($excludeList)
-        ORDER BY RAND()
-        LIMIT 4
-    ");
-
-    while ($r = mysqli_fetch_assoc($fallbackQuery)) {
-        $alsoBuy[] = $r;
-    }
 }

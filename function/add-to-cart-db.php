@@ -83,7 +83,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
         $insertItem->close();
     }
 
-    $_SESSION['success_message'] = "✅ Product added to cart successfully!";
-    header("Location: ../view/customer/cart.php");
+    // $_SESSION['success_message'] = "✅ Product added to cart successfully!";
+    // header("Location: ../view/customer/cart.php");
+    // exit();
+    header('Content-Type: application/json');
+
+    echo json_encode([
+        'success' => true,
+        'message' => 'Product added to cart successfully!'
+    ]);
     exit();
 }

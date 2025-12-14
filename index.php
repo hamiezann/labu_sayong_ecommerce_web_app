@@ -103,7 +103,7 @@ $title = "Labu Sayong - Home";
                                                     <p class="product-price">RM <?= number_format($product['price'], 2) ?></p>
                                                 </div>
                                                 <div class="d-flex align-items-center gap-3 mt-3">
-                                                    <a href="<?= base_url('view/customer/product-detail.php?id=' . $product['product_id']) ?>" class="btn btn-view flex-grow-1">View Details</a>
+                                                    <a href="<?= base_url('view/customer/product-detail.php?id=' . $product['product_id']) ?>" class="btn btn-view">View Details</a>
                                                     <button class="btn btn-icon-fav wishlist-btn"
                                                         data-product-id="<?= $product['product_id'] ?>">
                                                         <i class="bi <?= $product['in_wishlist'] ? 'bi-heart-fill text-danger' : 'bi-heart' ?> fs-5"></i>
@@ -143,7 +143,8 @@ $title = "Labu Sayong - Home";
         <?php if (mysqli_num_rows($productList) >= 6): // if more than 8 products 
         ?>
             <div class="text-center mt-5">
-                <a href="<?= base_url('view/shop-listing.php') ?>" class="btn btn-send btn-lg">
+                <!-- <a href="<?= base_url('view/shop-listing.php') ?>" class="btn btn-send btn-lg"> -->
+                <a href="<?= base_url('view/shop-listing.php') ?>" class="btn btn-view">
                     View More Products
                 </a>
             </div>
@@ -257,8 +258,8 @@ $title = "Labu Sayong - Home";
                             <label class="form-label fw-500">Message</label>
                             <textarea class="form-control" rows="5" placeholder="How can we help you?" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-send">
-                            <i class="bi bi-send me-2"></i> Send Message
+                        <button type="submit" class="btn btn-view">
+                            <i class=" bi bi-send me-2"></i> Send Message
                         </button>
                     </form>
                 </div>
