@@ -181,21 +181,15 @@ if (isset($_POST['sign-in'])) {
                                 <a href="<?= base_url('') ?>" style="color: #4F46E5; text-decoration: none; font-weight: 600;">Home</a>
                             </p>
                         </div>
+                        <p class="text-center mt-3">
+                            <a style="color: #4F46E5; text-decoration: none; font-weight: 600;" href="<?= base_url('view/auth/forgot-password.php') ?>">
+                                Forgot password?
+                            </a>
+                        </p>
+
                     </form>
                 </div>
             </div>
-
-            <!-- Right Side - Illustration -->
-            <!-- <div class="col-lg-7 col-md-6 d-none d-md-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #edc493 0%, #c9b59c 100%); padding: 3rem; position: relative; overflow: hidden;">
-                <div style="width: 100%; max-width: 600px; text-align: center; position: relative; z-index: 2;">
-                    <h2 style="color: white; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 20px rgba(0,0,0,0.2);">CRAFTEASE</h2>         
-                </div>
-                <div style="position: absolute; top: 10%; left: 5%; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 20px; transform: rotate(45deg);"></div>
-                <div style="position: absolute; bottom: 15%; right: 8%; width: 150px; height: 150px; background: rgba(255,255,255,0.08); border-radius: 30px; transform: rotate(-15deg);"></div>
-                <div style="position: absolute; top: 50%; right: 15%; width: 60px; height: 60px; background: rgba(255,255,255,0.12); border-radius: 50%;"></div>
-                <div style="position: absolute; bottom: 30%; left: 10%; width: 80px; height: 80px; border: 3px solid rgba(255,255,255,0.2); border-radius: 15px; transform: rotate(25deg);"></div>
-            </div> -->
-
             <!-- Right Side - Background Image -->
             <div class="col-lg-7 col-md-6 d-none d-md-flex" style="background: url('<?= base_url('assets/img/bg3.jpg') ?>') no-repeat center center/cover;position: relative; min-height: 100vh;">
                 <div style=" position: absolute; inset: 0;background: rgba(0,0,0,0.35);"></div>

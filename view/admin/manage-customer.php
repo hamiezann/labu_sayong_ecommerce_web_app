@@ -131,10 +131,21 @@ include '../../template/sidebar.php';
 <main class="app-main">
     <div class="app-content p-4">
         <div class="container-fluid">
-            <div class="d-flex justify-content-between align-item-center mb-4">
+            <!-- <div class="d-flex justify-content-between align-item-center mb-4">
 
                 <h1 class="mb-4"><i class="bi bi-people-fill me-2"></i><?= $pageName ?></h1>
                 <button class="btn btn-md btn-success addBtn"><i class="bi bi-plus-lg me-2"></i> Add Customer</button>
+            </div> -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-people-fill"></i>
+                    <?= $pageName ?>
+                </h1>
+
+                <button class="btn d-flex align-items-center gap-2 px-3 py-2 addBtn" style="background-color: #74512D; color: white">
+                    <i class="bi bi-plus-lg"></i>
+                    <span>Add Customer</span>
+                </button>
             </div>
 
             <!-- Alert message -->
@@ -146,7 +157,7 @@ include '../../template/sidebar.php';
 
             <!-- customer list -->
             <div class="card-shadow-sm">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header text-white" style="background-color: #74512D">
                     <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Customer List</h5>
                 </div>
                 <div class="card-body">
@@ -230,7 +241,7 @@ include '../../template/sidebar.php';
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" enctype="multipart/form-data" class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header  text-white" style="background-color: #74512D; color: white">
                 <h5 class="modal-title">Edit Customer Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -241,16 +252,20 @@ include '../../template/sidebar.php';
                     <input type="file" id="edit_image" name="edit_image" accept="image/*" class="form-control">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Full Name</label>
+                    <label class="form-label">Full Name
+                        <span style="margin-left:4px; color: red;">*</span>
+                    </label>
                     <input type="text" name="edit_name" id="edit_fullname" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">Email
+                        <span style="margin-left:4px; color: red;">*</span>
+                    </label>
                     <input type="text" name="edit_email" id="edit_email" class="form-control" required>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" name="update_customer" class="btn btn-primary">Update</button>
+                <button type="submit" name="update_customer" class="btn" style="background-color: #74512D; color: white">Update</button>
             </div>
         </form>
     </div>
@@ -260,7 +275,7 @@ include '../../template/sidebar.php';
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" enctype="multipart/form-data" class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header  text-white" style="background-color: #74512D; color: white">
                 <h5 class="modal-title">Add New Customer Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -275,16 +290,21 @@ include '../../template/sidebar.php';
                     <img id="edit_image_preview" src="<?= base_url('assets/img/preview.jpg') ?>" width="100" alt="Preview" class="rounded mt-2">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Full Name</label>
+                    <label class="form-label">
+                        Full Name
+                        <span style="margin-left:4px; color: red;">*</span>
+                    </label>
                     <input type="text" name="add_fullname" id="add_fullname" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">Email
+                        <span style="margin-left:4px; color: red;">*</span>
+                    </label>
                     <input type="text" name="add_email" id="add_email" class="form-control" required>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" name="create_customer" class="btn btn-primary">Create</button>
+                <button type="submit" name="create_customer" class="btn " style="background-color: #74512D; color: white">Create</button>
             </div>
         </form>
     </div>

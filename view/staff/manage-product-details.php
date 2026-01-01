@@ -131,26 +131,34 @@ $options = mysqli_query($conn, "
 
             <!-- PRODUCT FORM -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header " style="background-color: #74512D; color: white">
                     <h5 class="mb-0"><?= $productId ? 'Edit Product' : 'Create Product' ?></h5>
                 </div>
                 <div class="card-body">
                     <form method="POST" enctype="multipart/form-data">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Product Name</label>
+                                <label class="form-label">Product Name
+                                    <span style="margin-left:4px; color: red;">*</span>
+                                </label>
                                 <input type="text" name="name" class="form-control" required value="<?= $product['name'] ?? '' ?>">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">Price (RM)</label>
+                                <label class="form-label">Price (RM)
+                                    <span style="margin-left:4px; color: red;">*</span>
+                                </label>
                                 <input type="number" name="price" step="0.01" class="form-control" required value="<?= $product['price'] ?? '' ?>">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">Stock</label>
+                                <label class="form-label">Stock
+                                    <span style="margin-left:4px; color: red;">*</span>
+                                </label>
                                 <input type="number" name="stock" class="form-control" required value="<?= $product['stock'] ?? '' ?>">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Description</label>
+                                <label class="form-label">Description
+                                    <span style="margin-left:4px; color: red;">*</span>
+                                </label>
                                 <input type="text" name="description" class="form-control" required value="<?= $product['description'] ?? '' ?>">
                             </div>
                             <div class="col-md-6">
@@ -162,7 +170,7 @@ $options = mysqli_query($conn, "
                             </div>
                         </div>
                         <div class="text-end mt-3">
-                            <button type="submit" name="save_product" class="btn btn-primary">
+                            <button type="submit" name="save_product" class="btn" style="background-color: #74512D; color: white">
                                 <i class="bi bi-save me-1"></i> Save
                             </button>
                             <a href="manage-product.php" class="btn btn-secondary">Cancel</a>
@@ -180,7 +188,9 @@ $options = mysqli_query($conn, "
                     <div class="card-body">
                         <form method="POST" enctype="multipart/form-data" class="row g-3">
                             <div class="col-md-3">
-                                <label class="form-label">Option Type</label>
+                                <label class="form-label">Option Type
+                                    <span style="margin-left:4px; color: red;">*</span>
+                                </label>
                                 <select name="option_name" id="typeSelect" class="form-select" required onchange="toggleValueInput()">
                                     <option value="">-- Select Type --</option>
                                     <option value="Color">Color</option>

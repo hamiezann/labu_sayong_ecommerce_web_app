@@ -1,17 +1,19 @@
 <!--begin::Sidebar-->
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-    <div class="sidebar-brand">
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="light">
+    <!-- <div class="sidebar-brand" style="background-color: #543310;"> -->
+    <div class="sidebar-brand" style="background-color: #AF8F6F; ">
         <a href="<?= base_url('./') ?>" class="brand-link">
             <img
                 src="<?= base_url('assets/img/AdminLTELogo.png') ?>"
                 alt="AdminLTE Logo"
                 class="brand-image opacity-75 shadow" />
-            <span class="brand-text fw-light"><?= $userInfo['Role'] === 'admin' ? 'Admin Dashboard' : 'Staff Dashboard' ?></span>
+            <span class="brand-text fw-light" style="color: white;"><?= $userInfo['Role'] === 'admin' ? 'Admin Dashboard' : 'Staff Dashboard' ?></span>
         </a>
     </div>
-
-    <div class="sidebar-wrapper">
-        <nav class="mt-2">
+    <!-- style="background-color: #F8F4E1" -->
+    <div class="sidebar-wrapper" style="background-color: #AF8F6F;">
+        <!-- <nav class="mt-2"> -->
+        <nav>
             <ul
                 class="nav sidebar-menu flex-column"
                 data-lte-toggle="treeview"
@@ -81,7 +83,7 @@
 
                 <!-- order management -->
                 <li class="nav-item">
-                    <a href="<?= base_url('view/staff/order-list.php') ?>" class="nav-link <?= $subPage == 'view-orders' ? 'active' : '' ?>">
+                    <a href="<?= base_url('view/staff/order-list.php') ?>" class="nav-link <?= $page == 'order-management' ? 'active' : '' ?>">
                         <i class="nav-icon bi bi-cart-check"></i>
                         <p>Order Management</p>
                     </a>
@@ -112,7 +114,7 @@
 
                 <!-- chat / inquiries -->
                 <li class="nav-item">
-                    <a href="<?= base_url('view/staff/chat-list.php') ?>" class="nav-link <?= $subPage == 'chat-list' ? 'active' : '' ?>">
+                    <a href="<?= base_url('view/staff/chat-list.php') ?>" class="nav-link <?= $page == 'chat-list' ? 'active' : '' ?>">
                         <i class="nav-icon bi bi-chat-dots"></i>
                         <p> Chat / Inquiries</p>
                     </a>

@@ -4,7 +4,9 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/login.php");
     exit();
 }
-
+$page = 'order-management';
+$subPage = 'view-orders';
+$pageName = 'Order Management';
 $query = "SELECT o.*, u.FullName, s.FullName AS staff_name 
           FROM orders o
           INNER JOIN users u ON o.user_id = u.id
@@ -17,9 +19,8 @@ $result = $stmt->get_result();
 include '../../template/header.php';
 include '../../template/sidebar.php';
 
-$page = 'order';
-$subPage = 'view-orders';
-$pageName = 'Order Management';
+// $page = 'order';
+
 ?>
 
 <!-- <main class="app-main"> -->
@@ -31,7 +32,7 @@ $pageName = 'Order Management';
         </h1>
 
         <div class="card shadow-sm">
-            <div class="card-header bg-success text-white">
+            <div class="card-header text-white" style="background-color: #74512D">
                 <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>All Orders</h5>
             </div>
 
@@ -99,9 +100,9 @@ $pageName = 'Order Management';
 <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header bg-success text-white">
+            <div class="card-header text-white" style="background-color: #74512D !important; color: white">
                 <h5 class="modal-title" id="orderDetailLabel"><i class="bi bi-receipt"></i> Order Details</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <!-- <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button> -->
             </div>
             <div class="modal-body">
 

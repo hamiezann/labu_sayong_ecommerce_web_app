@@ -1,6 +1,10 @@
 <?php
 include '../../includes/config.php';
 include '../../template/header.php';
+$page = 'chat-list';
+$subPage = 'chat-list';
+$pageName = 'User Inquiries';
+
 include '../../template/sidebar.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -12,9 +16,6 @@ $staff_id = $_SESSION['user_id'];
 $role = $userInfo['Role']; // 'admin' or 'staff'
 
 
-$page = 'chat';
-$subPage = 'chat-list';
-$pageName = 'User Inquiries';
 
 // Staff list (for admin assignment)
 $staffList = [];
@@ -25,7 +26,7 @@ if ($role === 'admin') {
     }
 }
 
-// ✅ Everyone (admin + staff) can see all chat sessions
+//  Everyone (admin + staff) can see all chat sessions
 $where = "1 = 1";
 
 // Fetch chat sessions with product and user info
@@ -48,10 +49,20 @@ $query = mysqli_query($conn, "
 <main class="app-main">
     <div class="app-content p-4">
         <div class="container-fluid">
-            <h1 class="mb-4"><i class="bi bi-chat-dots me-2"></i><?= $pageName ?></h1>
+            <h1 class="mb-4">
 
+                <i class="bi bi-chat-dots me-2"></i><?= $pageName ?>
+            </h1>
+            <?php if (isset($_SESSION['success_message'])): ?>
+                <div class="alert alert-success"><?= $_SESSION['success_message'];
+                                                    unset($_SESSION['success_message']); ?></div>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['error_message'])): ?>
+                <div class="alert alert-danger"><?= $_SESSION['error_message'];
+                                                unset($_SESSION['error_message']); ?></div>
+            <?php endif; ?>
             <div class="card shadow-sm">
-                <div class="card-header bg-info text-white d-flex justify-content-between">
+                <div class="card-header text-white d-flex justify-content-between" style="background-color: #74512D">
                     <h5 class="mb-0"><i class="bi bi-envelope-open me-2"></i>Recent Chats</h5>
                     <?php if ($role === 'admin'): ?>
                         <small class="text-light">Admin mode: full control</small>
@@ -81,7 +92,7 @@ $query = mysqli_query($conn, "
                                     ? '<span class="badge bg-success">Claimed</span>'
                                     : '<span class="badge bg-secondary">Unassigned</span>';
 
-                                // ✅ Only admin or assigned staff can access chat
+                                //  Only admin or assigned staff can access chat
                                 $canChat = ($role === 'admin' || $row['assigned_staff_id'] == $staff_id);
                                 ?>
                                 <tr>

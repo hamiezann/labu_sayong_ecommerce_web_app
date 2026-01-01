@@ -227,7 +227,10 @@ body {
   font-weight: 500;
   transition: all 0.3s;
 }
-
+.required-star {
+  color: red;
+  margin-left: 4px;
+}
 .btn-view:hover {
   transform: translateY(-2px);
   background-color: #c7b7a3;

@@ -56,21 +56,21 @@ if (!empty($userInfo['Image'])) {
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
     <div class="app-wrapper">
-        <nav class="app-header navbar navbar-expand bg-body">
+        <nav class="app-header navbar navbar-expand bg-body" style="background-color: #603F26!important;">
             <div class="container-fluid">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                        <a class="nav-link" data-lte-toggle="sidebar" style="color: white!important;" href="#" role="button">
                             <i class="bi bi-list"></i>
                         </a>
                     </li>
-                    <li class="nav-item d-none d-md-block"><a href="#" class="nav-link"><?= $title ?></a></li>
+                    <li class="nav-item fw-semibold d-none d-md-block"><a href="#" style="color: white!important;" class="nav-link"><?= $title ?></a></li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
 
                     <!-- fullscreen toggle -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+                        <a class="nav-link" href="#" data-lte-toggle="fullscreen" style="color: white!important;">
                             <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
                             <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
                         </a>
@@ -78,7 +78,7 @@ if (!empty($userInfo['Image'])) {
 
                     <!-- user information -->
                     <li class="nav-item dropdown user-menu">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" style="color: white!important;" data-bs-toggle="dropdown">
                             <img
                                 src="<?= $imagePath ?>"
                                 class="user-image rounded-circle shadow"
@@ -86,7 +86,7 @@ if (!empty($userInfo['Image'])) {
                             <span class="d-none d-md-inline"><?= strtr($userInfo['FullName'], 0, 20) ?></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                            <li class="user-header text-bg-primary text-center">
+                            <li class="user-header text-center" style="background-color: #AF8F6F;">
                                 <img
                                     src="<?= htmlspecialchars($imagePath) ?>"
                                     class="rounded-circle shadow mb-2"

@@ -32,12 +32,13 @@ include '../../template/sidebar.php';
 ?>
 
 <main class="app-main">
+    <!-- <div class="app-content p-4" style="background-color: #F8F4E1"> -->
     <div class="app-content p-4">
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="fw-bold mb-0"><i class="bi bi-box-seam me-2"></i><?= $pageName ?></h1>
                 <a href="<?= base_url('view/staff/manage-product-details.php?action=create') ?>"
-                    class="btn btn-success px-3">
+                    class="btn  px-3" style="background-color: #74512D; color: white">
                     <i class="bi bi-plus-lg me-1"></i> Create Product
                 </a>
             </div>
@@ -52,7 +53,7 @@ include '../../template/sidebar.php';
 
 
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header  text-white" style="background-color: #74512D">
                     <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i> Product List</h5>
                 </div>
                 <div class="card-body">

@@ -67,7 +67,7 @@ include '../../template/sidebar.php';
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="mb-4"><i class="bi bi-person-badge me-2"></i><?= $pageName ?></h1>
-                <button class="btn btn-warning px-3 changePasswordBtn"
+                <button class="btn px-3 changePasswordBtn" style="background-color: #74512D; color: white"
                     title="Edit Password">
                     <i class="bi bi-shield-lock me-1"></i> Change Password
                 </button>
@@ -86,7 +86,7 @@ include '../../template/sidebar.php';
 
             <!-- Profile Card -->
             <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header text-white" style="background-color: #74512D; color: white">
                     <h5 class="mb-0"><i class="bi bi-person-fill me-2"></i>My Profile</h5>
 
                 </div>
@@ -127,7 +127,7 @@ include '../../template/sidebar.php';
                                 </div>
 
                                 <div class="d-flex justify-content-end">
-                                    <button type="submit" name="update_staff" class="btn btn-primary px-4">
+                                    <button type="submit" name="update_staff" class="btn px-4" style="background-color: #74512D; color: white">
                                         <i class="bi bi-save me-2"></i>Save Changes
                                     </button>
                                 </div>
@@ -145,7 +145,7 @@ include '../../template/sidebar.php';
 <div class="modal fade" id="chgPassModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" enctype="multipart/form-data" action="../auth/update-password.php" class="modal-content">
-            <div class="modal-header bg-warning text-white">
+            <div class="modal-header  text-white" style="background-color: #74512D; color: white">
                 <h5 class="modal-title">Change Password</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -180,7 +180,7 @@ include '../../template/sidebar.php';
                 </div>
             </div>
             <div class="col-12 text-center m-3">
-                <button type="submit" class="btn btn-warning px-4">
+                <button type="submit" class="btn px-4" style="background-color: #74512D; color: white">
                     <i class="bi bi-save me-1"></i> Update Password
                 </button>
             </div>

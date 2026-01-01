@@ -13,8 +13,8 @@ $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id = '
 if ($user['Role'] !== 'admin') {
     die("Access denied.");
 }
-
-$page = 'reports';
+$page = 'dashboard';
+// $page = 'reports';
 $pageName = 'Reports & Analytics';
 
 include '../../template/header.php';
@@ -63,13 +63,13 @@ $topProducts = mysqli_query($conn, "
 ?>
 
 <main class="app-main">
-    <div class="app-content p-4" style="background-color: #f7f8fc; min-height: 100vh;">
+    <div class="app-content p-4" style=" min-height: 100vh;">
         <div class="container-fluid">
 
             <!-- Page Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="fw-bold text-dark">
-                    <i class="bi bi-graph-up-arrow me-2 text-primary"></i><?= $pageName ?>
+                    <i class="bi bi-graph-up-arrow me-2 "></i><?= $pageName ?>
                 </h1>
             </div>
 

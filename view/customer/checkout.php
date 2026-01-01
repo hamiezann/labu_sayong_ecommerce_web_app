@@ -1,7 +1,7 @@
 <?php
 ob_start();
 include '../customer/header.php';
-include '../../includes/config.php';
+// include '../../includes/config.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/login.php");
@@ -174,12 +174,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
 ?>
 
 <div class="container py-5">
-    <h2 class="fw-bold mb-4 text-primary"><i class="bi bi-credit-card me-2"></i>Checkout</h2>
+    <h2 class="fw-bold mb-4"><i class="bi bi-credit-card me-2"></i>Checkout</h2>
 
     <div class="row">
         <div class="col-md-7">
             <div class="card shadow-sm mb-4">
-                <div class="card-header back-info-custom text-white d-flex align-items-center">
+                <div class="card-header back-info-custom text-white d-flex align-items-center" style="background-color: #74512D;">
                     <i class="bi bi-truck me-2"></i>
                     <h5 class="mb-0">Shipping & Payment</h5>
                 </div>
@@ -191,7 +191,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
                             <textarea name="address" class="form-control" rows="3" placeholder="Enter your full address..." required></textarea>
                         </div> -->
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Shipping Address</label>
+                            <label class="form-label fw-semibold">Shipping Address
+                                <span class="required-star">*</span>
+                            </label>
 
                             <div class="form-check mb-2">
                                 <input
@@ -216,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Shipping Option</label>
+                            <label class="form-label fw-semibold">Shipping Option<span class="required-star">*</span></label>
                             <select name="shipping_option" class="form-select" required>
                                 <option value="Peninsular">Peninsular Malaysia (RM 20)</option>
                                 <option value="Sabah/Sarawak">Sabah / Sarawak (RM 30)</option>
@@ -241,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Proof of Payment</label>
+                            <label class="form-label fw-semibold">Proof of Payment <span class="required-star">*</span> </label>
                             <input type="file" name="proof_of_payment" accept=".pdf" class="form-control" required>
                         </div>
 
@@ -255,17 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
 
         <!-- RIGHT: QR & ORDER SUMMARY -->
         <div class="col-md-5">
-            <div class="card shadow-sm mb-4 text-center">
-                <div class="card-header back-success-custom text-white">
-                    <h5 class="mb-0"><i class="bi bi-qr-code me-2"></i>QR Payment</h5>
-                </div>
-                <div class="card-body">
-                    <p class="text-muted small mb-2">Scan the QR code below to make payment:</p> <img src="<?= base_url('assets/img/qr-payment.jpg') ?>" alt="QR Code" class="img-fluid rounded shadow-sm mb-3" style="max-width: 250px;">
-                    <p class="fw-semibold mb-0">Account Name: Labu Sayong Ceramics</p>
-                    <p class="text-muted small mb-0">Bank: Maybank | Acc No: 1234567890</p>
-                    <p class="text-success small mt-2"><i class="bi bi-shield-check"></i> Secure QR Transfer Enabled</p>
-                </div>
-            </div>
+
 
             <!-- RIGHT: ORDER SUMMARY -->
             <div class="card shadow-sm">
@@ -295,6 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
                     <?php
                     $total_quantity = array_sum(array_column($cartItems, 'quantity'));
                     $discount = ($total_quantity > 100) ? ($subtotal * 0.10) : 0;
+                    $total_amount = $subtotal - $discount;
                     ?>
                     <div class="d-flex justify-content-between">
                         <span>Subtotal</span>
@@ -307,9 +300,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
                         </div>
                     <?php endif; ?>
                     <div class="d-flex justify-content-between">
-                        <span>Shipping (calculated at next step)</span>
-                        <strong>-</strong>
+                        <span>Shipping</span>
+                        <strong id="shippingFee">RM 0.00</strong>
+
                     </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span>Total</span>
+                        <strong id="totalAmount">RM <?= number_format($total_amount, 2) ?></strong>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow-sm mt-4 text-center">
+                <div class="card-header back-success-custom text-white">
+                    <h5 class="mb-0"><i class="bi bi-qr-code me-2"></i>QR Payment</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-2">Scan the QR code below to make payment:</p> <img src="<?= base_url('assets/img/qr-payment.jpg') ?>" alt="QR Code" class="img-fluid rounded shadow-sm mb-3" style="max-width: 250px;">
+                    <p class="fw-semibold mb-0">Account Name: Labu Sayong Ceramics</p>
+                    <p class="text-muted small mb-0">Bank: Maybank | Acc No: 1234567890</p>
+                    <p class="text-success small mt-2"><i class="bi bi-shield-check"></i> Secure QR Transfer Enabled</p>
                 </div>
             </div>
         </div>
@@ -351,7 +361,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
             textarea.readOnly = false;
         }
     });
+
+    const subtotal = <?= json_encode($total_amount) ?>;
+
+    const shippingRates = {
+        "Peninsular": 20,
+        "Sabah/Sarawak": 30,
+        "Overseas": 0
+    };
+
+    const shippingSelect = document.querySelector('select[name="shipping_option"]');
+    const shippingFeeEl = document.getElementById('shippingFee');
+    const totalAmountEl = document.getElementById('totalAmount');
+
+    function updateShipping() {
+        const selected = shippingSelect.value;
+        const fee = shippingRates[selected] ?? 0;
+        const total = subtotal + fee;
+
+        shippingFeeEl.textContent = `RM ${fee.toFixed(2)}`;
+        totalAmountEl.textContent = `RM ${total.toFixed(2)}`;
+    }
+
+    // Initial load
+    updateShipping();
+
+    // Update on change
+    shippingSelect.addEventListener('change', updateShipping);
 </script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <?php include '../customer/footer.php'; ?>
